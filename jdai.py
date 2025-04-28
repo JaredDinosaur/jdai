@@ -14,13 +14,16 @@ def phase1():
     print("1) Minimal")
     print("2) Console")
     print("3) Desktop with KDE Plasma")
+    print("4) Desktop with Hyprland")
     pkgsel=int(input("Select an installation type: "))
     if pkgsel==1:
-        pkglist="base linux linux-firmware grub iwd"
+        pkglist="base linux linux-firmware grub iwd python nano"
     elif pkgsel==2:
-        pkglist="base linux linux-firmware screenfetch tree htop plymouth grub iwd"
+        pkglist="base linux linux-firmware screenfetch tree htop plymouth grub iwd python git nano"
+    elif pkgsel==3:
+        pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth grub dolphin discover plasma-desktop plasma-workspace plasma-meta sddm vlc iwd grub-customizer git nano"
     else:
-        pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth grub dolphin discover plasma-desktop plasma-workspace plasma-meta sddm vlc iwd grub-customizer"
+        pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth grub dolphin discover sddm vlc iwd grub-customizer hyprland kitty git nano"
     os.system("pacstrap -K /mnt "+pkglist)
     os.system("genfstab -U /mnt >> /mnt/etc/fstab")
     os.system("clear")
