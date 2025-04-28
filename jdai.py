@@ -46,7 +46,6 @@ def phase2():
     name=input("Enter a username: ")
     os.system("ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime")
     os.system("hwclock --systohc")
-    os.system("pacman -Sy nano")
     os.system("nano /etc/locale.gen")
     os.system("locale-gen")
     os.system("echo LANG=en_GB.UTF-8 > /etc/locale.conf")
