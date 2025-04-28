@@ -6,9 +6,9 @@ phase=int(input("Enter the phase to run: "))
 
 def phase1():
     part=input("The partition to format and mount as the root of the installation is /dev/")
+    os.system("setfont ter-132b")
     os.system("mkfs.ext4 /dev/"+part)
     os.system("mount /dev/"+part+" /mnt")
-    os.system("setfont ter-132b")
     os.system("loadkeys uk")
     os.system("clear")
     print("1) Minimal")
@@ -17,7 +17,7 @@ def phase1():
     pkgsel=int(input("Select an installation type: "))
     if pkgsel==1:
         pkglist="base linux linux-firmware grub iwd"
-    elif pksel==2:
+    elif pkgsel==2:
         pkglist="base linux linux-firmware screenfetch tree htop plymouth grub iwd"
     else:
         pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth grub dolphin discover plasma-desktop plasma-workspace plasma-meta sddm vlc iwd grub-customizer"
