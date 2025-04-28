@@ -34,7 +34,7 @@ def phase1():
     print("arch-chroot /mnt")
     print("")
     print("Or, if cloned from GitHub:")
-    print("mv jdai.py /mnt")
+    print("mv jdai/jdai.py /mnt")
     print("arch-chroot /mnt")
 
 def phase2():
