@@ -1,12 +1,13 @@
 import os
+# Set large font to aid readability
+os.system("setfont ter-132b")
+os.system("clear")
 print("Before Phase 1 is started, the installation's root partition must be created and an internet connection must be present.")
 print("You can modify partitions with cfdisk.")
 print("This script is for BIOS (non-UEFI or UEFI-CSM) x86_64 systems ONLY!")
 phase=int(input("Enter the phase to run: "))
 
 def phase1():
-    # Set large font to aid readability
-    os.system("setfont ter-132b")
     part=input("The partition to format and mount as the root of the installation is /dev/")
     # Format selected partition as ext4
     os.system("mkfs.ext4 /dev/"+part)
@@ -26,9 +27,9 @@ def phase1():
     elif pkgsel==2:
         pkglist="base linux linux-firmware screenfetch tree htop plymouth grub iwd python git nano"
     elif pkgsel==3:
-        pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth grub dolphin discover plasma-desktop plasma-workspace plasma-meta sddm vlc iwd grub-customizer git nano"
+        pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth grub dolphin discover plasma-desktop plasma-workspace plasma-meta sddm vlc iwd git nano"
     else:
-        pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth grub dolphin discover sddm vlc iwd grub-customizer hyprland kitty wofi waybar hyprpaper git nano"
+        pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth grub dolphin discover sddm vlc iwd hyprland kitty wofi waybar hyprpaper git nano"
     os.system("pacstrap -K /mnt "+pkglist)
     # Generate filesystem table
     os.system("genfstab -U /mnt >> /mnt/etc/fstab")
@@ -53,7 +54,7 @@ def phase2():
     # Set region, locale and timezone
     os.system("ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime")
     os.system("hwclock --systohc")
-    os.system("nano /etc/locale.gen")
+    os.system("echo 'en_GB.UTF_8 UTF-8' > /etc/locale.gen")
     os.system("locale-gen")
     os.system("echo LANG=en_GB.UTF-8 > /etc/locale.conf")
     os.system("echo KEYMAP=uk > /etc/vconsole.conf")
