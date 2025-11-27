@@ -1,10 +1,10 @@
 #!/bin/bash
 setfont ter-132b
 clear
-echo Before Phase 1 is run, a root partition must exist and the system must be connected to the internet.
-echo You can use cfdisk to create a root partition and iwctl to connect to Wi-Fi.
-echo This script is for BIOS systems or UEFI systems which support Legacy Boot.
-echo Enter which phase to run:
+echo "Before Phase 1 is run, a root partition must exist and the system must be connected to the internet."
+echo "You can use cfdisk to create a root partition and iwctl to connect to Wi-Fi."
+echo "This script is for BIOS systems or UEFI systems which support Legacy Boot."
+echo "Enter which phase to run: "
 read phase
 case $phase in
     1)
@@ -92,6 +92,7 @@ case $phase in
         echo "Phase 2 complete!"
         echo "Press Ctrl+Alt+Del to reboot."
         echo
+        ;;
     *)
         echo "Exiting..."
         ;;
