@@ -28,13 +28,13 @@ case $phase in
                 pkglist="base linux linux-firmware grub iwd python nano"
                 ;;
             2)
-                pkglist="base linux linux-firmware screenfetch tree htop plymouth grub iwd python git nano"
+                pkglist="base linux linux-firmware screenfetch tree htop plymouth grub iwd python git nano dialog"
                 ;;
             3)
-                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth grub dolphin discover plasma-desktop plasma-workspace plasma-meta sddm vlc iwd git nano"
+                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth grub dolphin discover plasma-desktop plasma-workspace plasma-meta sddm vlc iwd git nano konsole dialog"
                 ;;
             *)
-                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth grub dolphin discover sddm vlc iwd hyprland kitty wofi waybar hyprpaper git nano"
+                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth grub dolphin discover sddm vlc iwd hyprland kitty wofi waybar hyprpaper git nano konsole dialog"
                 ;;
         esac
 
