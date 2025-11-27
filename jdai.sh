@@ -8,19 +8,19 @@ echo Enter which phase to run:
 read phase
 case $phase in
     1)
-        echo WARNING: All data on this partition will be erased!
-        echo The root partition is located at /dev/___:  
+        echo "WARNING: All data on this partition will be erased!"
+        echo "The root partition is located at /dev/___: "
         read part
         mkfs.ext4 /dev/$part
         mount /dev/$part /mnt
         loadkeys uk
         clear
 
-        echo 1) Minimal
-        echo 2) Basic
-        echo 3) Desktop (Plasma)
-        echo 4) Desktop (Hyprland)
-        echo Select your edition: 
+        echo "1) Minimal"
+        echo "2) Basic"
+        echo "3) Desktop (Plasma)"
+        echo "4) Desktop (Hyprland)"
+        echo "Select your edition: "
         read pkgsel
 
         case $pkgsel in
@@ -44,19 +44,19 @@ case $phase in
         clear
 
         echo
-        echo Phase 1 complete!
-        echo Please run the following commands to continue:
-        echo arch-chroot /mnt
-        echo ./jdai.sh
+        echo "Phase 1 complete!"
+        echo "Please run the following commands to continue:"
+        echo "arch-chroot /mnt"
+        echo "./jdai.sh"
         echo
         ;;
     2)
         echo
-        echo GRUB will be installed to /dev/___: 
+        echo "GRUB will be installed to /dev/___: "
         read grubpart
-        echo Name your device: 
+        echo "Name your device: "
         read hname
-        echo Name your user: 
+        echo "Name your user: "
         read name
 
         ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime
@@ -69,13 +69,13 @@ case $phase in
         systemctl enable sddm accounts-daemon ip6tables iptables iwd NetworkManager-dispatcher NetworkManager systemd-network-generator systemd-networkd udisks2 upower wpa_supplicant
         clear
 
-        echo Enter the root password: 
+        echo "Enter the root password: "
         passwd
 
         grub-install /dev/$grubpart
         clear
 
-        echo Edit the GRUB configuration now? (y/n)
+        echo "Edit the GRUB configuration now? (y/n) "
         read egrub
         if [ "$egrub" == "y" ]; then
             nano /etc/default/grub
@@ -84,15 +84,15 @@ case $phase in
         clear
 
         useradd -m -G wheel $name
-        echo Enter the password for your user: 
+        echo "Enter the password for your user: "
         passwd $name
         clear
         
         echo
-        echo Phase 2 complete!
-        echo Press Ctrl+Alt+Del to reboot.
+        echo "Phase 2 complete!"
+        echo "Press Ctrl+Alt+Del to reboot."
         echo
     *)
-        echo Exiting...
+        echo "Exiting..."
         ;;
 esac
