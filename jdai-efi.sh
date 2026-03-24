@@ -249,8 +249,11 @@ while [[ $loop == 1 ]]; do
     echo
     echo -e '\e[3m'"Install with these options?"'\e(B\e[m'
     echo
+    echo "-------------------------------------"
+    echo
     echo -e '\e[36m'"[Y]" '\e(B\e[m'"Begin installation"
     echo -e '\e[36m'"[N]" '\e(B\e[m'"Cancel installation"
+    echo
     echo -e '\e[36m'"[1]" '\e(B\e[m'"Change locale"
     echo -e '\e[36m'"[2]" '\e(B\e[m'"Change partitioning"
     echo -e '\e[36m'"[3]" '\e(B\e[m'"Change packages"
@@ -259,18 +262,22 @@ while [[ $loop == 1 ]]; do
     read -n 1 choice
     case $choice in
         y|Y)
-            echo
+            clear
             echo "Starting installation in 5 seconds..."
             sleep 1
+            clear
             echo "Starting installation in 4 seconds..."
             sleep 1
+            clear
             echo "Starting installation in 3 seconds..."
             sleep 1
+            clear
             echo "Starting installation in 2 seconds..."
             sleep 1
+            clear
             echo "Starting installation in 1 second..."
             sleep 1
-            echo 
+            clear
             loop=0
             ;;
         n|N)
