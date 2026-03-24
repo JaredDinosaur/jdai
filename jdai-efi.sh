@@ -12,10 +12,12 @@ locale(){
         case $choice in
             1)
                 keys="uk"
+                reg="GB"
                 loop=0
                 ;;
             2)
                 keys="--default"
+                reg="US"
                 loop=0
                 ;;
             *)
@@ -146,29 +148,38 @@ pkgs(){
         read -n 1 choice
         case $choice in
             1)
-                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth dolphin discover plasma sddm vlc iwd git nano konsole dialog limine"
+                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth dolphin discover plasma sddm vlc iwd git nano konsole dialog limine sudo"
                 loop=0
                 ;;
             2)
-                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth dolphin discover vlc iwd hyprland kitty wofi waybar hyprpaper git nano konsole dialog lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings limine"
+                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth dolphin discover vlc iwd hyprland kitty wofi waybar hyprpaper git nano konsole dialog lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings limine sudo"
                 loop=0
                 ;;
             3)
-                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop xfce4 xfce4-goodies plymouth vlc iwd git nano dialog lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings limine"
+                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop xfce4 xfce4-goodies plymouth vlc iwd git nano dialog lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings limine sudo"
                 loop=0
                 ;;
             4)
-                pkglist="base linux linux-firmware screenfetch tree htop plymouth iwd python git nano dialog limine"
+                pkglist="base linux linux-firmware screenfetch tree htop plymouth iwd python git nano dialog limine sudo"
                 loop=0
                 ;;
             5)
-                pkglist="base linux linux-firmware iwd python nano limine"
+                pkglist="base linux linux-firmware iwd python nano limine sudo"
                 loop=0
                 ;;
             *)
                 ;;
         esac
     done
+}
+
+hostname(){
+    clear
+    read hname -p "Name your machine (letters, numbers and dashes): "
+}
+
+user(){
+    read uname -p "Name your user (single word, lowercase): "
 }
 
 echo "==================================WARNING=================================="
@@ -187,10 +198,31 @@ case $choice in
         exit
         ;;
 esac
-locale
+
+sed -i "s/#Color/Color/" /etc/pacman.conf
+sed -i "s/ParallelDownloads = 5/Parallel Downloads = 1/" /etc/pacman.conf
 pacman -Sy hwinfo
+locale
 diskpart
 pkgs
+
+chmod +x jdai-efi-2.sh
+echo "ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime" >> jdai-efi-2.sh
+echo "hwclock --systohc" >> jdai-efi-2.sh
+echo "locale-gen" >> jdai-efi-2.sh
+echo "systemctl enable sddm accounts-daemon ip6tables iptables iwd NetworkManager-dispatcher NetworkManager systemd-network-generator systemd-networkd udisks2 upower wpa_supplicant lightdm" >> jdai-efi-2.sh
+echo "mkinitcpio -P" >> jdai-efi-2.sh
+echo "clear" >> jdai-efi-2.sh
+echo "echo 'Set the root password: '" >> jdai-efi-2.sh
+echo "passwd" >> jdai-efi-2.sh
+echo "efibootmgr --create --disk /dev/${disk} ---part 1 --label \"Arch Linux\" --loader '\\EFI\\arch-limine\\BOOTX64.EFI' --unicode" >> jdai-efi-2.sh
+echo "useradd -m -G wheel $uname" >> jdai-efi-2.sh
+echo "echo 'Set your user password: '" >> jdai-efi-2.sh
+echo "passwd $uname" >> jdai-efi-2.sh
+echo "echo 'Press any key to edit the sudoers config...'" >> jdai-efi-2.sh
+echo "read -n 1" >> jdai-efi-2.sh
+echo "EDITOR=nano visudo" >> jdai-efi-2.sh
+
 case $manpart in
     0)
         ram=$(grep MemTotal /proc/meminfo | awk '{print int($2/1024)}')
@@ -241,5 +273,32 @@ mkswap /dev/$swap
 swapon /dev/$swap
 pacstrap -K /mnt $pkglist
 genfstab -U /mnt >> /mnt/etc/fstab
+echo "en_${reg}.UTF-8 UTF-8" > /mnt/etc/locale.gen
+echo "LANG=en_${reg}.UTF-8" > /mnt/etc/locale.conf
+if [[ $reg == "GB" ]]; then
+    echo "KEYMAP=uk" > /mnt/etc/vconsole.conf
+fi
+echo $hname > /mnt/etc/hostname
+sed -i "s/block filesystems fsck/block encrypt filesystems fsck plymouth/" /mnt/etc/mkinitcpio.conf
+mkdir -p /mnt/boot/EFI/arch-limine
+cp /mnt/usr/share/limine/BOOTX64.EFI /mnt/boot/EFI/arch-limine
+uuid=$(findmnt / -o UUID -n)
+touch /mnt/boot/EFI/arch-limine/limine.conf
+echo "timeout: 0" >> /mnt/boot/EFI/arch-limine/limine.conf
+echo "" >> /mnt/boot/EFI/arch-limine/limine.conf
+echo "/Arch Linux" >> /mnt/boot/EFI/arch-limine/limine.conf
+echo "    protocol: linux" >> /mnt/boot/EFI/arch-limine/limine.conf
+echo "    path: boot():/vmlinuz-linux" >> /mnt/boot/EFI/arch-limine/limine.conf
+echo "    cmdline: root=UUID=${uuid} zswap.enabled=0 rw rootfstype=${rootfs} quiet splash" >> /mnt/boot/EFI/arch-limine/limine.conf
+echo "    module_path: boot():/initramfs-linux.img" >> /mnt/boot/EFI/arch-limine/limine.conf
+sed -i "s/#Color/Color/" /mnt/etc/pacman.conf
+sed -i "s/ParallelDownloads = 5/Parallel Downloads = 1/" /mnt/etc/pacman.conf
+sed -i "s/#[multilib]/[multilib]/" /mnt/etc/pacman.conf
+
 cp ./* /mnt
-arch-chroot /mnt bash "jdai-efi-2.sh"
+arch-chroot /mnt bash "./jdai-efi-2.sh"
+
+echo
+echo
+echo
+echo "Done! You may now reboot."
