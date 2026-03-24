@@ -221,8 +221,8 @@ pkgs
 sethostname
 user
 
-loop=1
-while [[ $loop == 1 ]]; do
+menu=1
+while [[ $menu == 1 ]]; do
     clear
     echo "Region: $reg"
     echo "Disk: $disk"
@@ -278,7 +278,7 @@ while [[ $loop == 1 ]]; do
             echo "Starting installation in 1 second..."
             sleep 1
             clear
-            loop=0
+            menu=0
             ;;
         n|N)
             exit
