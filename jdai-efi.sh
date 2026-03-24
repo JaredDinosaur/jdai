@@ -307,8 +307,8 @@ chmod +x jdai-efi-2.sh
 echo "ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime" >> jdai-efi-2.sh
 echo "hwclock --systohc" >> jdai-efi-2.sh
 echo "locale-gen" >> jdai-efi-2.sh
-echo "systemctl enable sddm accounts-daemon ip6tables iptables iwd NetworkManager-dispatcher NetworkManager systemd-network-generator systemd-networkd udisks2 upower wpa_supplicant lightdm" >> jdai-efi-2.sh
 echo "mkinitcpio -P" >> jdai-efi-2.sh
+echo "systemctl enable sddm accounts-daemon ip6tables iptables iwd NetworkManager-dispatcher NetworkManager systemd-network-generator systemd-networkd udisks2 upower wpa_supplicant lightdm" >> jdai-efi-2.sh
 echo "clear" >> jdai-efi-2.sh
 echo "echo 'Set the root password: '" >> jdai-efi-2.sh
 echo "passwd" >> jdai-efi-2.sh
