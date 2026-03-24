@@ -390,7 +390,7 @@ case $crypt in
         sed -i "s/block filesystems fsck/block keyboard filesystems fsck/" /mnt/etc/mkinitcpio.conf
         ;;
     1)
-        sed -i "s/block filesystems fsck/block keyboard plymouth encrypt filesystems fsck/" /mnt/etc/mkinitcpio.conf
+        sed -i "s/block filesystems fsck/block keyboard encrypt filesystems fsck plymouth/" /mnt/etc/mkinitcpio.conf
         ;;
 esac
 touch /mnt/boot/EFI/arch-limine/limine.conf
