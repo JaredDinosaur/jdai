@@ -1,6 +1,6 @@
 #!/bin/bash
-set -e
-locale(){
+set -euo pipefail
+setlocale(){
     loop=1
     while [[ $loop == 1 ]]; do
         clear
@@ -70,13 +70,14 @@ diskpart(){
                 loop=0
                 ;;
             2)
+                manpart=1
                 loop=0
                 ;;
             *)
                 ;;
         esac
     done
-    if [[ "$disk" == "sd"* ]]; then
+    if [[ "$disk" =~ ^sd ]]; then
         root="${disk}3"
         boot="${disk}1"
         swap="${disk}2"
@@ -205,9 +206,9 @@ case $choice in
 esac
 
 sed -i "s/#Color/Color/" /etc/pacman.conf
-sed -i "s/ParallelDownloads = 5/Parallel Downloads = 1/" /etc/pacman.conf
+sed -i "s/ParallelDownloads = 5/ParallelDownloads = 1/" /etc/pacman.conf
 pacman -Sy hwinfo
-locale
+setlocale
 diskpart
 pkgs
 hostname
@@ -237,7 +238,7 @@ while [[ $loop == 1 ]]; do
     esac
     echo "Profile: $profile"
     echo "Hostname: $hname"
-    echo "Username: $user"
+    echo "Username: $uname"
     echo
     echo -e '\e[3m'"Install with these options?"'\e(B\e[m'
     echo
@@ -269,7 +270,7 @@ while [[ $loop == 1 ]]; do
             exit
             ;;
         1)
-            locale
+            setlocale
             ;;
         2)
             diskpart
@@ -297,7 +298,7 @@ echo "mkinitcpio -P" >> jdai-efi-2.sh
 echo "clear" >> jdai-efi-2.sh
 echo "echo 'Set the root password: '" >> jdai-efi-2.sh
 echo "passwd" >> jdai-efi-2.sh
-echo "efibootmgr --create --disk /dev/${disk} ---part 1 --label \"Arch Linux\" --loader '\\EFI\\arch-limine\\BOOTX64.EFI' --unicode" >> jdai-efi-2.sh
+echo "efibootmgr --create --disk /dev/${disk} --part 1 --label \"Arch Linux\" --loader '\\EFI\\arch-limine\\BOOTX64.EFI' --unicode" >> jdai-efi-2.sh
 echo "useradd -m -G wheel $uname" >> jdai-efi-2.sh
 echo "echo 'Set your user password: '" >> jdai-efi-2.sh
 echo "passwd $uname" >> jdai-efi-2.sh
@@ -309,7 +310,7 @@ case $manpart in
     0)
         ram=$(grep MemTotal /proc/meminfo | awk '{print int($2/1024)}')
         swapend=$((1024 + ram))
-        fdisk /dev/$disk #<<EOF
+        fdisk /dev/$disk <<EOF
         g
         n
         1
@@ -361,10 +362,17 @@ if [[ $reg == "GB" ]]; then
     echo "KEYMAP=uk" > /mnt/etc/vconsole.conf
 fi
 echo $hname > /mnt/etc/hostname
-sed -i "s/block filesystems fsck/block encrypt filesystems fsck plymouth/" /mnt/etc/mkinitcpio.conf
 mkdir -p /mnt/boot/EFI/arch-limine
 cp /mnt/usr/share/limine/BOOTX64.EFI /mnt/boot/EFI/arch-limine
-uuid=$(findmnt / -o UUID -n)
+case $crypt in
+    0)
+        uuid=$(blkid -s UUID -o value /dev/$root)
+        ;;
+    1)
+        uuid=$(blkid -s UUID -o value /dev/mapper/root)
+        sed -i "s/block filesystems fsck/block encrypt filesystems fsck plymouth/" /mnt/etc/mkinitcpio.conf
+        ;;
+esac
 touch /mnt/boot/EFI/arch-limine/limine.conf
 echo "timeout: 0" >> /mnt/boot/EFI/arch-limine/limine.conf
 echo "" >> /mnt/boot/EFI/arch-limine/limine.conf
