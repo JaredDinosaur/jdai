@@ -356,6 +356,7 @@ case $crypt in
         mount /dev/$root /mnt
         ;;
     1)
+        clear
         cryptsetup -v luksFormat /dev/$root
         cryptsetup open /dev/$root root
         mkfs.$rootfs /dev/mapper/root
