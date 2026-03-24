@@ -324,8 +324,8 @@ echo "EDITOR=nano visudo" >> jdai-efi-2.sh
 echo "cd /home/$uname" >> jdai-efi-2.sh
 echo "git clone https://aur.archlinux.org/yay.git" >> jdai-efi-2.sh
 echo "cd yay" >> jdai-efi-2.sh
-echo "su $user -c 'makepkg -si'" >> jdai-efi-2.sh
-echo "su $user -c 'yay -S firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog'"
+echo "su $uname -c 'makepkg -si'" >> jdai-efi-2.sh
+echo "su $uname -c 'yay -S firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog'"
 
 case $manpart in
     0)
