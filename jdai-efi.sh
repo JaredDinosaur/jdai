@@ -322,7 +322,7 @@ echo "echo 'Press any key to edit the sudoers config...'" >> jdai-efi-2.sh
 echo "read -n 1" >> jdai-efi-2.sh
 echo "EDITOR=nano visudo" >> jdai-efi-2.sh
 echo "cd /home/$uname" >> jdai-efi-2.sh
-echo "git clone https://aur.archlinux.org/yay.git" >> jdai-efi-2.sh
+echo "su $uname -c 'git clone https://aur.archlinux.org/yay.git'" >> jdai-efi-2.sh
 echo "cd yay" >> jdai-efi-2.sh
 echo "su $uname -c 'makepkg -si'" >> jdai-efi-2.sh
 echo "su $uname -c 'yay -S firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog'"
