@@ -192,6 +192,7 @@ noint(){
     echo
     echo "No internet connection found. Use iwctl to connect to a wireless network."
     exit 1
+}
 
 echo "==================================WARNING=================================="
 echo "                This script requires an internet connection!               "
