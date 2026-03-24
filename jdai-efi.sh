@@ -188,15 +188,20 @@ user(){
     read -p "Name your user (single word, lowercase): " uname
 }
 
+noint(){
+    echo
+    echo "No internet connection found. Use iwctl to connect to a wireless network."
+    exit 1
+
 echo "==================================WARNING=================================="
 echo "                This script requires an internet connection!               "
 echo "                This script is for 64-bit UEFI systems only!               "
 echo " This script is intended to be run within the Arch Linux live environment! "
 echo "==========================================================================="
-ping -c 1 archlinux.org || exit 1
 echo "                                [Y] Continue                               "
 echo "                                 [N] Cancel                                "
 read -n 1 choice
+ping -c 1 archlinux.org || noint
 case $choice in
     y|Y)
         clear
