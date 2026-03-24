@@ -35,7 +35,7 @@ diskpart(){
         hwinfo --disk --short
         echo
         echo "Recommended minimum disk space: 64GB for VMs, 128GB for real hardware"
-        read disk -p "The disk to install to is /dev/"
+        read -p "The disk to install to is /dev/" disk
         echo
         echo -e '\e[3m'"WARNING: The contents of this disk will be erased!"'\e(B\e[m'
         echo -e '\e[3m'"Double check that you have selected the correct disk!"'\e(B\e[m'
@@ -77,7 +77,7 @@ diskpart(){
                 ;;
         esac
     done
-    if [[ "$disk" =~ ^sd ]]; then
+    if [[ "$disk" == *"d"* ]]; then
         root="${disk}3"
         boot="${disk}1"
         swap="${disk}2"
@@ -179,13 +179,13 @@ pkgs(){
     done
 }
 
-hostname(){
+sethostname(){
     clear
-    read hname -p "Name your machine (letters, numbers and dashes): "
+    read -p "Name your machine (letters, numbers and dashes): " hname
 }
 
 user(){
-    read uname -p "Name your user (single word, lowercase): "
+    read -p "Name your user (single word, lowercase): " uname
 }
 
 echo "==================================WARNING=================================="
@@ -193,6 +193,7 @@ echo "                This script requires an internet connection!              
 echo "                This script is for 64-bit UEFI systems only!               "
 echo " This script is intended to be run within the Arch Linux live environment! "
 echo "==========================================================================="
+ping -c 1 archlinux.org || echo "No internet connection found, exiting..." && exit 1
 echo "                                [Y] Continue                               "
 echo "                                 [N] Cancel                                "
 read -n 1 choice
@@ -207,11 +208,11 @@ esac
 
 sed -i "s/#Color/Color/" /etc/pacman.conf
 sed -i "s/ParallelDownloads = 5/ParallelDownloads = 1/" /etc/pacman.conf
-pacman -Sy hwinfo
+pacman -Sy --noconfirm hwinfo
 setlocale
 diskpart
 pkgs
-hostname
+sethostname
 user
 
 loop=1
@@ -279,7 +280,7 @@ while [[ $loop == 1 ]]; do
             pkgs
             ;;
         4)
-            hostname
+            sethostname
             ;;
         5)
             user
@@ -309,19 +310,18 @@ echo "EDITOR=nano visudo" >> jdai-efi-2.sh
 case $manpart in
     0)
         ram=$(grep MemTotal /proc/meminfo | awk '{print int($2/1024)}')
-        swapend=$((1024 + ram))
         fdisk /dev/$disk <<EOF
-        g
-        n
-        1
-        +1G
-        n
-        2
-        +${ram}M
-        n
-        3
-        w
-        EOF
+g
+n
+1
++1G
+n
+2
++${ram}M
+n
+3
+w
+EOF
         ;;
     1)
         echo
@@ -382,7 +382,7 @@ echo "    path: boot():/vmlinuz-linux" >> /mnt/boot/EFI/arch-limine/limine.conf
 echo "    cmdline: root=UUID=${uuid} zswap.enabled=0 rw rootfstype=${rootfs} quiet splash" >> /mnt/boot/EFI/arch-limine/limine.conf
 echo "    module_path: boot():/initramfs-linux.img" >> /mnt/boot/EFI/arch-limine/limine.conf
 sed -i "s/#Color/Color/" /mnt/etc/pacman.conf
-sed -i "s/ParallelDownloads = 5/Parallel Downloads = 1/" /mnt/etc/pacman.conf
+sed -i "s/ParallelDownloads = 5/ParallelDownloads = 1/" /mnt/etc/pacman.conf
 sed -i "s/#[multilib]/[multilib]/" /mnt/etc/pacman.conf
 
 cp ./* /mnt
