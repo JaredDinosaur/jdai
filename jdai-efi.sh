@@ -384,13 +384,13 @@ fi
 echo $hname > /mnt/etc/hostname
 mkdir -p /mnt/boot/EFI/arch-limine
 cp /mnt/usr/share/limine/BOOTX64.EFI /mnt/boot/EFI/arch-limine
+uuid=$(blkid -s UUID -o value /dev/$root)
 case $crypt in
     0)
-        uuid=$(blkid -s UUID -o value /dev/$root)
+        sed -i "s/block filesystems fsck/block keyboard filesystems fsck/" /mnt/etc/mkinitcpio.conf
         ;;
     1)
-        uuid=$(blkid -s UUID -o value /dev/mapper/root)
-        sed -i "s/block filesystems fsck/block encrypt filesystems fsck plymouth/" /mnt/etc/mkinitcpio.conf
+        sed -i "s/block filesystems fsck/block keyboard plymouth encrypt filesystems fsck/" /mnt/etc/mkinitcpio.conf
         ;;
 esac
 touch /mnt/boot/EFI/arch-limine/limine.conf
@@ -399,7 +399,13 @@ echo "" >> /mnt/boot/EFI/arch-limine/limine.conf
 echo "/Arch Linux" >> /mnt/boot/EFI/arch-limine/limine.conf
 echo "    protocol: linux" >> /mnt/boot/EFI/arch-limine/limine.conf
 echo "    path: boot():/vmlinuz-linux" >> /mnt/boot/EFI/arch-limine/limine.conf
-echo "    cmdline: root=UUID=${uuid} zswap.enabled=0 rw rootfstype=${rootfs} quiet splash" >> /mnt/boot/EFI/arch-limine/limine.conf
+case $crypt in
+    0)
+        echo "    cmdline: root=UUID=${uuid} zswap.enabled=0 rw rootfstype=${rootfs} quiet splash" >> /mnt/boot/EFI/arch-limine/limine.conf
+        ;;
+    1)
+        echo "    cmdline: cryptdevice=UUID=${uuid}:root root=/dev/mapper/root rw rootfstype=${rootfs} quiet splash"
+esac
 echo "    module_path: boot():/initramfs-linux.img" >> /mnt/boot/EFI/arch-limine/limine.conf
 sed -i "s/#Color/Color/" /mnt/etc/pacman.conf
 sed -i "s/ParallelDownloads = 5/ParallelDownloads = 1/" /mnt/etc/pacman.conf
