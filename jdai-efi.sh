@@ -193,7 +193,7 @@ echo "                This script requires an internet connection!              
 echo "                This script is for 64-bit UEFI systems only!               "
 echo " This script is intended to be run within the Arch Linux live environment! "
 echo "==========================================================================="
-ping -c 1 archlinux.org || echo "No internet connection found, exiting..." && exit 1
+ping -c 1 archlinux.org || exit 1
 echo "                                [Y] Continue                               "
 echo "                                 [N] Cancel                                "
 read -n 1 choice
