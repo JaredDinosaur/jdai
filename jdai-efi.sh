@@ -404,7 +404,7 @@ case $crypt in
         echo "    cmdline: root=UUID=${uuid} zswap.enabled=0 rw rootfstype=${rootfs} quiet splash" >> /mnt/boot/EFI/arch-limine/limine.conf
         ;;
     1)
-        echo "    cmdline: cryptdevice=UUID=${uuid}:root root=/dev/mapper/root rw rootfstype=${rootfs} quiet splash"
+        echo "    cmdline: cryptdevice=UUID=${uuid}:root root=/dev/mapper/root rw rootfstype=${rootfs} quiet splash" >> /mnt/boot/EFI/arch-limine/limine.conf
 esac
 echo "    module_path: boot():/initramfs-linux.img" >> /mnt/boot/EFI/arch-limine/limine.conf
 sed -i "s/#Color/Color/" /mnt/etc/pacman.conf
