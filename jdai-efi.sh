@@ -149,27 +149,27 @@ pkgs(){
         read -n 1 choice
         case $choice in
             1)
-                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth dolphin discover plasma sddm vlc iwd git nano konsole dialog limine sudo efibootmgr networkmanager"
+                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth dolphin discover plasma sddm vlc iwd git nano konsole dialog limine sudo efibootmgr networkmanager base-devel"
                 profile="Desktop (Plasma)"
                 loop=0
                 ;;
             2)
-                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth dolphin discover vlc iwd hyprland kitty wofi waybar hyprpaper git nano konsole dialog lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings limine sudo efibootmgr networkmanager"
+                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth dolphin discover vlc iwd hyprland kitty wofi waybar hyprpaper git nano konsole dialog lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings limine sudo efibootmgr networkmanager base-devel"
                 profile="Desktop (Hyprland)"
                 loop=0
                 ;;
             3)
-                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop xfce4 xfce4-goodies plymouth vlc iwd git nano dialog lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings limine sudo efibootmgr networkmanager"
+                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop xfce4 xfce4-goodies plymouth vlc iwd git nano dialog lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings limine sudo efibootmgr networkmanager base-devel"
                 profile="Desktop (Xfce)"
                 loop=0
                 ;;
             4)
-                pkglist="base linux linux-firmware screenfetch tree htop plymouth iwd python git nano dialog limine sudo efibootmgr networkmanager"
+                pkglist="base linux linux-firmware screenfetch tree htop plymouth iwd python git nano dialog limine sudo efibootmgr networkmanager base-devel"
                 profile="Command line"
                 loop=0
                 ;;
             5)
-                pkglist="base linux linux-firmware iwd python nano limine sudo efibootmgr networkmanager"
+                pkglist="base linux linux-firmware iwd python nano limine sudo efibootmgr networkmanager base-devel"
                 profile="Minimal"
                 loop=0
                 ;;
@@ -321,6 +321,11 @@ echo "passwd $uname" >> jdai-efi-2.sh
 echo "echo 'Press any key to edit the sudoers config...'" >> jdai-efi-2.sh
 echo "read -n 1" >> jdai-efi-2.sh
 echo "EDITOR=nano visudo" >> jdai-efi-2.sh
+echo "cd /home/$uname" >> jdai-efi-2.sh
+echo "git clone https://aur.archlinux.org/yay.git" >> jdai-efi-2.sh
+echo "cd yay" >> jdai-efi-2.sh
+echo "su $user -c 'makepkg -si'" >> jdai-efi-2.sh
+echo "su $user -c 'yay -S firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog'"
 
 case $manpart in
     0)
