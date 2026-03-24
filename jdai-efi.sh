@@ -149,22 +149,27 @@ pkgs(){
         case $choice in
             1)
                 pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth dolphin discover plasma sddm vlc iwd git nano konsole dialog limine sudo"
+                profile="Desktop (Plasma)"
                 loop=0
                 ;;
             2)
                 pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth dolphin discover vlc iwd hyprland kitty wofi waybar hyprpaper git nano konsole dialog lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings limine sudo"
+                profile="Desktop (Hyprland)"
                 loop=0
                 ;;
             3)
                 pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop xfce4 xfce4-goodies plymouth vlc iwd git nano dialog lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings limine sudo"
+                profile="Desktop (Xfce)"
                 loop=0
                 ;;
             4)
                 pkglist="base linux linux-firmware screenfetch tree htop plymouth iwd python git nano dialog limine sudo"
+                profile="Command line"
                 loop=0
                 ;;
             5)
                 pkglist="base linux linux-firmware iwd python nano limine sudo"
+                profile="Minimal"
                 loop=0
                 ;;
             *)
@@ -205,6 +210,83 @@ pacman -Sy hwinfo
 locale
 diskpart
 pkgs
+hostname
+user
+
+loop=1
+while [[ $loop == 1 ]]; do
+    clear
+    echo "Region: $reg"
+    echo "Disk: $disk"
+    case $manpart in
+        0)
+            echo "Partitioning: Automatic"
+            ;;
+        1)
+            echo "Partitioning: Manual"
+            ;;
+    esac
+    echo "Filesystem: $rootfs"
+    case $crypt in
+        0)
+            echo "Encryption: Disabled"
+            ;;
+        1)
+            echo "Encryption: Enabled"
+            ;;
+    esac
+    echo "Profile: $profile"
+    echo "Hostname: $hname"
+    echo "Username: $user"
+    echo
+    echo -e '\e[3m'"Install with these options?"'\e(B\e[m'
+    echo
+    echo -e '\e[36m'"[Y]" '\e(B\e[m'"Begin installation"
+    echo -e '\e[36m'"[N]" '\e(B\e[m'"Cancel installation"
+    echo -e '\e[36m'"[1]" '\e(B\e[m'"Change locale"
+    echo -e '\e[36m'"[2]" '\e(B\e[m'"Change partitioning"
+    echo -e '\e[36m'"[3]" '\e(B\e[m'"Change packages"
+    echo -e '\e[36m'"[4]" '\e(B\e[m'"Change hostname"
+    echo -e '\e[36m'"[5]" '\e(B\e[m'"Change username"
+    read -n 1 choice
+    case $choice in
+        y|Y)
+            echo
+            echo "Starting installation in 5 seconds..."
+            sleep 1
+            echo "Starting installation in 4 seconds..."
+            sleep 1
+            echo "Starting installation in 3 seconds..."
+            sleep 1
+            echo "Starting installation in 2 seconds..."
+            sleep 1
+            echo "Starting installation in 1 second..."
+            sleep 1
+            echo 
+            loop=0
+            ;;
+        n|N)
+            exit
+            ;;
+        1)
+            locale
+            ;;
+        2)
+            diskpart
+            ;;
+        3)
+            pkgs
+            ;;
+        4)
+            hostname
+            ;;
+        5)
+            user
+            ;;
+        *)
+            ;;
+    esac
+done
 
 chmod +x jdai-efi-2.sh
 echo "ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime" >> jdai-efi-2.sh
