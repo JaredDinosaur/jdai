@@ -510,13 +510,13 @@ sed -i 's/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/' /mnt/etc/sudoers
 
 cp ./* /mnt
 if [[ $rootpass == "" ]]; then
-    arch-chroot /mnt bash "passwd -l root"
+    arch-chroot /mnt passwd -l root
 else
-    arch-chroot /mnt bash "echo \"root:$rootpass\" | chpasswd"
+    arch-chroot /mnt echo "root:$rootpass" | chpasswd
 fi
-arch-chroot /mnt bash "useradd -m -G wheel $uname"
-arch-chroot /mnt bash "echo \"$uname:$pass\" | chpasswd"
-arch-chroot /mnt bash "./jdai-efi-2.sh"
+arch-chroot /mnt useradd -m -G wheel $uname
+arch-chroot /mnt echo "$uname:$pass" | chpasswd
+arch-chroot /mnt bash ./jdai-efi-2.sh
 
 echo
 echo
