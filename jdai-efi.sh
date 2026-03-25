@@ -134,7 +134,7 @@ diskpart(){
                         read -s -p "Confirm password: " cryptconf
                         if [[ $cryptconf == $cryptpass ]]; then
                             clear
-                            cryptstar=${printf '%*s' "${cryptpass}" ''}
+                            printf -v cryptstar '%*s' "${#cryptpass}" ''
                             cryptstar=${cryptstar// /*}
                             valid=1
                         else
@@ -225,7 +225,7 @@ user(){
             read -s -p "Confirm password: " rootconf
             if [[ $rootconf == $rootpass ]]; then
                 clear
-                rootstar=${printf '%*s' "${rootpass}" ''}
+                printf -v rootstar '%*s' "${#rootpass}" ''
                 rootstar=${rootstar// /*}
                 valid=1
             else
@@ -245,10 +245,10 @@ user(){
             echo "Password cannot be blank!"
             echo
         else
-            read -s -p "Confirm password: " conf
+            read -s -p "Confirm password: " passconf
             if [[ $passconf == $pass ]]; then
                 clear
-                star=${printf '%*s' "${pass}" ''}
+                printf -v star '%*s' "${#pass}" ''
                 star=${star// /*}
                 valid=1
             else
@@ -505,7 +505,11 @@ sed -i "s/#[multilib]/[multilib]/" /mnt/etc/pacman.conf
 sed -i 's/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/' /mnt/etc/sudoers
 
 cp ./* /mnt
-arch-chroot /mnt bash "echo \"root:$rootpass\" | chpasswd"
+if [[ $rootpass == "" ]]; then
+    arch-chroot /mnt bash "passwd -l root"
+else
+    arch-chroot /mnt bash "echo \"root:$rootpass\" | chpasswd"
+fi
 arch-chroot /mnt bash "useradd -m -G wheel $uname"
 arch-chroot /mnt bash "echo \"$uname:$pass\" | chpasswd"
 arch-chroot /mnt bash "./jdai-efi-2.sh"
