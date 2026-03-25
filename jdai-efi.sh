@@ -304,6 +304,7 @@ while [[ $menu == 1 ]]; do
 done
 
 chmod +x jdai-efi-2.sh
+chmod +x jdai-usr.sh
 echo "ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime" >> jdai-efi-2.sh
 echo "hwclock --systohc" >> jdai-efi-2.sh
 echo "locale-gen" >> jdai-efi-2.sh
@@ -321,11 +322,24 @@ echo "passwd $uname" >> jdai-efi-2.sh
 echo "echo 'Press any key to edit the sudoers config...'" >> jdai-efi-2.sh
 echo "read -n 1" >> jdai-efi-2.sh
 echo "EDITOR=nano visudo" >> jdai-efi-2.sh
+echo "cp jdai-usr.sh /home/$uname" >> jdai-efi-2.sh
 echo "cd /home/$uname" >> jdai-efi-2.sh
-echo "su $uname -c 'git clone https://aur.archlinux.org/yay.git'" >> jdai-efi-2.sh
-echo "cd yay" >> jdai-efi-2.sh
-echo "su $uname -c 'makepkg -si'" >> jdai-efi-2.sh
-echo "su $uname -c 'yay -S firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog'"
+echo "su $uname -c ./jdai-usr.sh" >> jdai-efi-2.sh
+
+echo "git clone https://aur.archlinux.org/yay.git" >> jdai-usr.sh
+echo "cd yay" >> jdai-usr.sh
+echo "makepkg -si" >> jdai-usr.sh
+echo "yay -S firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog" >> jdai-usr.sh
+if [[ $profile == "Desktop (Hyprland)" ]]; then
+    echo "yay -S nerd-fonts" >> jdai-usr.sh
+    echo "cd .." >> jdai-usr.sh
+    echo "git clone https://github.com/JaredDinosaur/hyprconf" >> jdai-usr.sh
+    echo "cd hyprconf" >> jdai-usr.sh
+    echo "cp hyprland.conf ~/.config/hypr" >> jdai-usr.sh
+    echo "cp kitty.conf ~/.config/kitty" >> jdai-usr.sh
+    echo "sudo cp config.jsonc /etc/xdg/waybar" >> jdai-usr.sh
+    echo "sudo cp style.css /etc/xdg/waybar" >> jdai-usr.sh
+fi
 
 case $manpart in
     0)
