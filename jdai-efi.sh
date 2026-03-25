@@ -123,6 +123,27 @@ diskpart(){
         case $choice in
             y|Y)
                 crypt=1
+                valid=0
+                while [[ $valid == 0 ]]; do
+                    read -s -p "Enter the encryption password (will not show): " cryptpass
+                    if [[ $cryptpass == "" ]]; then
+                        clear
+                        echo "Password cannot be blank!"
+                        echo
+                    else
+                        read -s -p "Confirm password: " cryptconf
+                        if [[ $cryptconf == $cryptpass ]]; then
+                            clear
+                            cryptstar=${printf '%*s' "${cryptpass}" ''}
+                            cryptstar=${cryptstar// /*}
+                            valid=1
+                        else
+                            clear
+                            echo "Passwords do not match!"
+                            echo
+                        fi
+                    fi
+                done
                 loop=0
                 ;;
             n|N)
@@ -186,7 +207,57 @@ sethostname(){
 
 user(){
     clear
+    valid=0
+    while [[ $valid == 0 ]]; do
+        read -s -p "Enter the root password (will not show): " rootpass
+        if [[ $rootpass == "" ]]; then
+            clear
+            echo
+            echo "This will disable the root account! Are you sure?"
+            read -p "Enter \"Yes, I understand\" to continue: " rootconf
+            if [[ $rootconf == "Yes, I understand" ]]; then
+                clear
+                valid=1
+            else
+                clear
+            fi
+        else
+            read -s -p "Confirm password: " rootconf
+            if [[ $rootconf == $rootpass ]]; then
+                clear
+                rootstar=${printf '%*s' "${rootpass}" ''}
+                rootstar=${rootstar// /*}
+                valid=1
+            else
+                clear
+                echo "Passwords do not match!"
+                echo
+            fi
+        fi
+    done
+    clear
     read -p "Name your user (single word, lowercase): " uname
+    valid=0
+    while [[ $valid == 0 ]]; do
+        read -s -p "Enter your user's password (will not show): " pass
+        if [[ $pass == "" ]]; then
+            clear
+            echo "Password cannot be blank!"
+            echo
+        else
+            read -s -p "Confirm password: " conf
+            if [[ $passconf == $pass ]]; then
+                clear
+                star=${printf '%*s' "${pass}" ''}
+                star=${star// /*}
+                valid=1
+            else
+                clear
+                echo "Passwords do not match!"
+                echo
+            fi
+        fi
+    done
 }
 
 noint(){
@@ -244,11 +315,18 @@ while [[ $menu == 1 ]]; do
             ;;
         1)
             echo "Encryption: Enabled"
+            echo "Encryption password: $cryptstar"
             ;;
     esac
     echo "Profile: $profile"
     echo "Hostname: $hname"
+    if [[ $rootpass == "" ]]; then
+        echo "Root account: Disabled"
+    else
+        echo "Root password: $rootstar"
+    fi
     echo "Username: $uname"
+    echo "Password: $star"
     echo
     echo -e '\e[3m'"Install with these options?"'\e(B\e[m'
     echo
@@ -315,24 +393,15 @@ echo "mkinitcpio -P" >> jdai-efi-2.sh
 echo "systemctl enable accounts-daemon ip6tables iptables iwd NetworkManager-dispatcher NetworkManager systemd-network-generator systemd-networkd udisks2 upower wpa_supplicant" >> jdai-efi-2.sh
 echo "systemctl enable sddm" >> jdai-efi-2.sh
 echo "systemctl enable lightdm" >> jdai-efi-2.sh
-echo "clear" >> jdai-efi-2.sh
-echo "echo 'Set the root password: '" >> jdai-efi-2.sh
-echo "passwd" >> jdai-efi-2.sh
 echo "efibootmgr --create --disk /dev/${disk} --part 1 --label \"Arch Linux\" --loader '\\EFI\\arch-limine\\BOOTX64.EFI' --unicode" >> jdai-efi-2.sh
-echo "useradd -m -G wheel $uname" >> jdai-efi-2.sh
-echo "clear" >> jdai-efi-2.sh
-echo "echo 'Set your user password: '" >> jdai-efi-2.sh
-echo "passwd $uname" >> jdai-efi-2.sh
-echo "echo 'Press any key to edit the sudoers config...'" >> jdai-efi-2.sh
-echo "read -n 1" >> jdai-efi-2.sh
-echo "EDITOR=nano visudo" >> jdai-efi-2.sh
 echo "cp jdai-usr.sh /home/$uname" >> jdai-efi-2.sh
 echo "cd /home/$uname" >> jdai-efi-2.sh
 echo "su $uname -c ./jdai-usr.sh" >> jdai-efi-2.sh
 
 echo "git clone https://aur.archlinux.org/yay.git" >> jdai-usr.sh
 echo "cd yay" >> jdai-usr.sh
-echo "sudo -S pacman -Sy firefox firefox-i18n-uk firefox-ublock-origin flatpak screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog" >> jdai-usr.sh
+echo "PACMAN_AUTH=\"sudo -S\" makepkg -si" >> jdai-usr.sh
+echo "sudo -S yay -S --noconfirm firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog" >> jdai-usr.sh
 if [[ $profile == "Desktop (Hyprland)" ]]; then
     echo "sudo -S pacman -Sy nerd-fonts" >> jdai-usr.sh
     echo "cd .." >> jdai-usr.sh
@@ -387,10 +456,8 @@ case $crypt in
         mount /dev/$root /mnt
         ;;
     1)
-        clear
-        echo "Setting up encryption..."
-        cryptsetup -v luksFormat /dev/$root
-        cryptsetup open /dev/$root root
+        printf "%s" "$cryptpass" | cryptsetup -v --batch-mode luksFormat /dev/$root -
+        printf "%s" "$cryptpass" | cryptsetup open /dev/$root root -
         mkfs.$rootfs /dev/mapper/root
         mount /dev/mapper/root /mnt
         ;;
@@ -435,8 +502,12 @@ echo "    module_path: boot():/initramfs-linux.img" >> /mnt/boot/EFI/arch-limine
 sed -i "s/#Color/Color/" /mnt/etc/pacman.conf
 sed -i "s/ParallelDownloads = 5/ParallelDownloads = 1/" /mnt/etc/pacman.conf
 sed -i "s/#[multilib]/[multilib]/" /mnt/etc/pacman.conf
+sed -i 's/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/' /mnt/etc/sudoers
 
 cp ./* /mnt
+arch-chroot /mnt bash "echo \"root:$rootpass\" | chpasswd"
+arch-chroot /mnt bash "useradd -m -G wheel $uname"
+arch-chroot /mnt bash "echo \"$uname:$pass\" | chpasswd"
 arch-chroot /mnt bash "./jdai-efi-2.sh"
 
 echo
