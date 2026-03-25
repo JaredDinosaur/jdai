@@ -512,10 +512,10 @@ cp ./* /mnt
 if [[ $rootpass == "" ]]; then
     arch-chroot /mnt passwd -l root
 else
-    arch-chroot /mnt echo "root:$rootpass" | chpasswd
+    arch-chroot /mnt chpasswd <<< "root:$rootpass"
 fi
 arch-chroot /mnt useradd -m -G wheel $uname
-arch-chroot /mnt echo "$uname:$pass" | chpasswd
+arch-chroot /mnt chpasswd <<< "$uname:$pass"
 arch-chroot /mnt bash ./jdai-efi-2.sh
 
 echo
