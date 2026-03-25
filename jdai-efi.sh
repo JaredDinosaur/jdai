@@ -123,6 +123,7 @@ diskpart(){
         case $choice in
             y|Y)
                 crypt=1
+                clear
                 valid=0
                 while [[ $valid == 0 ]]; do
                     read -s -p "Enter the encryption password (will not show): " cryptpass
