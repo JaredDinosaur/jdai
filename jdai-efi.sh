@@ -394,7 +394,10 @@ echo "ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime" >> jdai-efi-2.sh
 echo "hwclock --systohc" >> jdai-efi-2.sh
 echo "locale-gen" >> jdai-efi-2.sh
 echo "mkinitcpio -P" >> jdai-efi-2.sh
-echo "systemctl enable accounts-daemon ip6tables iptables iwd NetworkManager-dispatcher NetworkManager systemd-network-generator systemd-networkd udisks2 upower wpa_supplicant" >> jdai-efi-2.sh
+echo "systemctl enable ip6tables iptables iwd NetworkManager-dispatcher NetworkManager systemd-network-generator systemd-networkd wpa_supplicant" >> jdai-efi-2.sh
+echo "systemctl enable accounts-daemon" >> jdai-efi-2.sh
+echo "systemctl enable udisks2" >> jdai-efi-2.sh
+echo "systemctl enable upower" >> jdai-efi-2.sh
 echo "systemctl enable sddm" >> jdai-efi-2.sh
 echo "systemctl enable lightdm" >> jdai-efi-2.sh
 echo "efibootmgr --create --disk /dev/${disk} --part 1 --label \"Arch Linux\" --loader '\\EFI\\arch-limine\\BOOTX64.EFI' --unicode" >> jdai-efi-2.sh
@@ -404,6 +407,7 @@ echo "su $uname -c ./jdai-usr.sh" >> jdai-efi-2.sh
 
 echo "git clone https://aur.archlinux.org/yay.git" >> jdai-usr.sh
 echo "cd yay" >> jdai-usr.sh
+echo "sudo -S pacman -Sy go" >> jdai-usr.sh
 echo "PACMAN_AUTH=\"sudo -S\" makepkg -si" >> jdai-usr.sh
 echo "sudo -S yay -S --noconfirm firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog" >> jdai-usr.sh
 if [[ $profile == "Desktop (Hyprland)" ]]; then
