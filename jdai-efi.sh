@@ -428,7 +428,7 @@ echo "su $uname -c ./jdai-usr.sh" >> jdai-efi-2.sh
 
 echo "git clone https://aur.archlinux.org/yay.git" >> jdai-usr.sh
 echo "cd yay" >> jdai-usr.sh
-echo "makepkg -si" >> jdai-usr.sh
+echo "makepkg -si --noconfirm" >> jdai-usr.sh
 if [[ $extrapkgs == 1 ]]; then
     echo "yay -S --noconfirm firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog" >> jdai-usr.sh
 fi
