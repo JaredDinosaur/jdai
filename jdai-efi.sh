@@ -131,6 +131,7 @@ diskpart(){
                         echo "Password cannot be blank!"
                         echo
                     else
+                        echo
                         read -s -p "Confirm password: " cryptconf
                         if [[ $cryptconf == $cryptpass ]]; then
                             clear
@@ -222,6 +223,7 @@ user(){
                 clear
             fi
         else
+            echo
             read -s -p "Confirm password: " rootconf
             if [[ $rootconf == $rootpass ]]; then
                 clear
@@ -245,6 +247,7 @@ user(){
             echo "Password cannot be blank!"
             echo
         else
+            echo
             read -s -p "Confirm password: " passconf
             if [[ $passconf == $pass ]]; then
                 clear
@@ -276,7 +279,7 @@ echo "==========================================================================
 echo "                                [Y] Continue                               "
 echo "                                 [N] Cancel                                "
 read -n 1 choice
-ping -c 1 archlinux.org || noint
+#ping -c 1 archlinux.org || noint
 case $choice in
     y|Y)
         clear
@@ -339,7 +342,7 @@ while [[ $menu == 1 ]]; do
     echo -e '\e[36m'"[2]" '\e(B\e[m'"Change partitioning"
     echo -e '\e[36m'"[3]" '\e(B\e[m'"Change packages"
     echo -e '\e[36m'"[4]" '\e(B\e[m'"Change hostname"
-    echo -e '\e[36m'"[5]" '\e(B\e[m'"Change username"
+    echo -e '\e[36m'"[5]" '\e(B\e[m'"Change username and authentication"
     read -n 1 choice
     case $choice in
         y|Y)
