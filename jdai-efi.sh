@@ -200,6 +200,27 @@ pkgs(){
                 ;;
         esac
     done
+    loop=1
+    while [[ $loop == 1 ]]; do
+        clear
+        echo -e '\e[3m'"Install additional packages?"'\e(B\e[m'
+        echo
+        echo -e '\e[36m'"[Y]" '\e(B\e[m'"Yes"
+        echo -e '\e[36m'"[N]" '\e(B\e[m'"No"
+        read -n 1 choice
+        case $choice in
+            y|Y)
+                extrapkgs=1
+                loop=0
+                ;;
+            n|N)
+                extrapkgs=0
+                loop=0
+                ;;
+            *)
+                ;;
+        esac
+    done
 }
 
 sethostname(){
@@ -409,7 +430,9 @@ echo "git clone https://aur.archlinux.org/yay.git" >> jdai-usr.sh
 echo "cd yay" >> jdai-usr.sh
 echo "sudo pacman -Sy go" >> jdai-usr.sh
 echo "makepkg -si" >> jdai-usr.sh
-echo "yay -S firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog" >> jdai-usr.sh
+if [[ $extrapkgs == 1 ]]; then
+    echo "yay -S firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog" >> jdai-usr.sh
+fi
 if [[ $profile == "Desktop (Hyprland)" ]]; then
     echo "sudo pacman -Sy --noconfirm nerd-fonts" >> jdai-usr.sh
     echo "cd .." >> jdai-usr.sh
