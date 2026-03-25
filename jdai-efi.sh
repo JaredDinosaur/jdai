@@ -185,6 +185,7 @@ sethostname(){
 }
 
 user(){
+    clear
     read -p "Name your user (single word, lowercase): " uname
 }
 
@@ -194,6 +195,8 @@ noint(){
     exit 1
 }
 
+clear
+echo
 echo "==================================WARNING=================================="
 echo "                This script requires an internet connection!               "
 echo "                This script is for 64-bit UEFI systems only!               "
@@ -317,6 +320,7 @@ echo "echo 'Set the root password: '" >> jdai-efi-2.sh
 echo "passwd" >> jdai-efi-2.sh
 echo "efibootmgr --create --disk /dev/${disk} --part 1 --label \"Arch Linux\" --loader '\\EFI\\arch-limine\\BOOTX64.EFI' --unicode" >> jdai-efi-2.sh
 echo "useradd -m -G wheel $uname" >> jdai-efi-2.sh
+echo "clear" >> jdai-efi-2.sh
 echo "echo 'Set your user password: '" >> jdai-efi-2.sh
 echo "passwd $uname" >> jdai-efi-2.sh
 echo "echo 'Press any key to edit the sudoers config...'" >> jdai-efi-2.sh
@@ -385,6 +389,7 @@ case $crypt in
         ;;
     1)
         clear
+        echo "Setting up encryption..."
         cryptsetup -v luksFormat /dev/$root
         cryptsetup open /dev/$root root
         mkfs.$rootfs /dev/mapper/root
