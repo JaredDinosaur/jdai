@@ -344,6 +344,14 @@ while [[ $menu == 1 ]]; do
             ;;
     esac
     echo "Profile: $profile"
+    case $extrapkgs in
+        0)
+            echo "Additional packages: Disabled"
+            ;;
+        1)
+            echo "Additional packages: Enabled"
+            ;;
+    esac
     echo "Hostname: $hname"
     if [[ $rootpass == "" ]]; then
         echo "Root account: Disabled"
