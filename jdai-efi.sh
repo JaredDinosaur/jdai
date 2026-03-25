@@ -332,17 +332,16 @@ echo "su $uname -c ./jdai-usr.sh" >> jdai-efi-2.sh
 
 echo "git clone https://aur.archlinux.org/yay.git" >> jdai-usr.sh
 echo "cd yay" >> jdai-usr.sh
-echo "makepkg -si" >> jdai-usr.sh
-echo "yay -S firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog" >> jdai-usr.sh
+echo "sudo -S pacman -Sy firefox firefox-i18n-uk firefox-ublock-origin flatpak screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog" >> jdai-usr.sh
 if [[ $profile == "Desktop (Hyprland)" ]]; then
-    echo "yay -S nerd-fonts" >> jdai-usr.sh
+    echo "sudo -S pacman -Sy nerd-fonts" >> jdai-usr.sh
     echo "cd .." >> jdai-usr.sh
     echo "git clone https://github.com/JaredDinosaur/hyprconf" >> jdai-usr.sh
     echo "cd hyprconf" >> jdai-usr.sh
     echo "cp hyprland.conf ~/.config/hypr" >> jdai-usr.sh
     echo "cp kitty.conf ~/.config/kitty" >> jdai-usr.sh
-    echo "sudo cp config.jsonc /etc/xdg/waybar" >> jdai-usr.sh
-    echo "sudo cp style.css /etc/xdg/waybar" >> jdai-usr.sh
+    echo "sudo -S cp config.jsonc /etc/xdg/waybar" >> jdai-usr.sh
+    echo "sudo -S cp style.css /etc/xdg/waybar" >> jdai-usr.sh
 fi
 
 case $manpart in
