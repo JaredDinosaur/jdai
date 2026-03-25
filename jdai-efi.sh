@@ -492,7 +492,7 @@ EOF
 esac
 case $crypt in
     0)
-        mkfs.$rootfs /dev/$root
+        mkfs.$rootfs -f /dev/$root
         mount /dev/$root /mnt
         ;;
     1)
