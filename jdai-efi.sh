@@ -167,6 +167,7 @@ pkgs(){
         echo -e '\e[36m'"[1]" '\e(B\e[m'"Desktop with Plasma" '\e[35m'"(default)"
         echo -e '\e[36m'"[2]" '\e(B\e[m'"Desktop with Hyprland"
         echo -e '\e[36m'"[3]" '\e(B\e[m'"Desktop with Xfce"
+        echo -e '\e[36m'"[4]" '\e(B\e[m'"Desktop with LXQt"
         echo -e '\e[36m'"[4]" '\e(B\e[m'"Command line"
         echo -e '\e[36m'"[5]" '\e(B\e[m'"Minimal"
         read -n 1 choice
@@ -177,21 +178,26 @@ pkgs(){
                 loop=0
                 ;;
             2)
-                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth dolphin discover vlc iwd hyprland kitty wofi waybar hyprpaper git nano konsole dialog sddm limine sudo efibootmgr networkmanager network-manager-applet base-devel blueman dunst wireplumber noto-fonts pipewire-pulse nerd-fonts sof-firmware sddm-kcm plymouth-kcm systemsettings"
+                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth dolphin discover vlc iwd hyprland kitty wofi waybar hyprpaper git nano konsole dialog sddm limine sudo efibootmgr networkmanager network-manager-applet base-devel blueman dunst wireplumber noto-fonts pipewire-pulse nerd-fonts sof-firmware sddm-kcm plymouth-kcm systemsettings breeze breeze-cursors breeze-plymouth flatpak-kcm plasma-integration"
                 profile="Desktop (Hyprland)"
                 loop=0
                 ;;
             3)
-                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop xfce4 xfce4-goodies plymouth vlc iwd git nano dialog lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings limine sudo efibootmgr networkmanager network-manager-applet base-devel blueman"
+                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop xfce4 xfce4-goodies plymouth discover vlc iwd git nano dialog lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings limine sudo efibootmgr networkmanager network-manager-applet base-devel blueman"
                 profile="Desktop (Xfce)"
                 loop=0
                 ;;
             4)
+                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth discover lxqt vlc iwd git nano dialog lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings limine sudo efibootmgr networkmanager network-manager-applet base-devel blueman"
+                profile="Desktop (LXQt)"
+                loop=0
+                ;;
+            5)
                 pkglist="base linux linux-firmware screenfetch tree htop plymouth iwd python git nano dialog limine sudo efibootmgr networkmanager base-devel blueman"
                 profile="Command line"
                 loop=0
                 ;;
-            5)
+            6)
                 pkglist="base linux linux-firmware iwd python nano limine sudo efibootmgr networkmanager base-devel"
                 profile="Minimal"
                 loop=0
