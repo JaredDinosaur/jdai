@@ -168,8 +168,8 @@ pkgs(){
         echo -e '\e[36m'"[2]" '\e(B\e[m'"Desktop with Hyprland"
         echo -e '\e[36m'"[3]" '\e(B\e[m'"Desktop with Xfce"
         echo -e '\e[36m'"[4]" '\e(B\e[m'"Desktop with LXQt"
-        echo -e '\e[36m'"[4]" '\e(B\e[m'"Command line"
-        echo -e '\e[36m'"[5]" '\e(B\e[m'"Minimal"
+        echo -e '\e[36m'"[5]" '\e(B\e[m'"Command line"
+        echo -e '\e[36m'"[6]" '\e(B\e[m'"Minimal"
         read -n 1 choice
         case $choice in
             1)
