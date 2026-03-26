@@ -177,7 +177,7 @@ pkgs(){
                 loop=0
                 ;;
             2)
-                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth dolphin discover vlc iwd hyprland kitty wofi waybar hyprpaper git nano konsole dialog sddm limine sudo efibootmgr networkmanager network-manager-applet base-devel blueman"
+                pkglist="base linux linux-firmware firefox flatpak screenfetch tree htop partitionmanager plymouth dolphin discover vlc iwd hyprland kitty wofi waybar hyprpaper git nano konsole dialog sddm limine sudo efibootmgr networkmanager network-manager-applet base-devel blueman dunst wireplumber noto-fonts pipewire-pulse nerd-fonts"
                 profile="Desktop (Hyprland)"
                 loop=0
                 ;;
@@ -441,7 +441,6 @@ if [[ $extrapkgs == 1 ]]; then
     echo "yay -S --noconfirm firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog" >> jdai-usr.sh
 fi
 if [[ $profile == "Desktop (Hyprland)" ]]; then
-    echo "sudo pacman -Sy --noconfirm nerd-fonts" >> jdai-usr.sh
     echo "cd .." >> jdai-usr.sh
     echo "git clone https://github.com/JaredDinosaur/hyprconf" >> jdai-usr.sh
     echo "cd hyprconf" >> jdai-usr.sh
