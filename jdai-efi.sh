@@ -66,6 +66,10 @@ diskpart(){
         read -n 1 choice
         case $choice in
             1)
+                rootno=3
+                bootno=1
+                swapno=2
+                formboot=1
                 manpart=0
                 loop=0
                 ;;
@@ -77,15 +81,6 @@ diskpart(){
                 ;;
         esac
     done
-    if [[ "$disk" == *"d"* ]]; then
-        root="${disk}3"
-        boot="${disk}1"
-        swap="${disk}2"
-    else
-        root="${disk}p3"
-        boot="${disk}p1"
-        swap="${disk}p2"
-    fi
     loop=1
     while [[ $loop == 1 ]]; do
         clear
@@ -382,22 +377,6 @@ while [[ $menu == 1 ]]; do
     read -n 1 choice
     case $choice in
         y|Y)
-            clear
-            echo "Starting installation in 5 seconds..."
-            sleep 1
-            clear
-            echo "Starting installation in 4 seconds..."
-            sleep 1
-            clear
-            echo "Starting installation in 3 seconds..."
-            sleep 1
-            clear
-            echo "Starting installation in 2 seconds..."
-            sleep 1
-            clear
-            echo "Starting installation in 1 second..."
-            sleep 1
-            clear
             menu=0
             ;;
         n|N)
@@ -460,6 +439,22 @@ fi
 
 case $manpart in
     0)
+        clear
+        echo "Starting installation in 5 seconds..."
+        sleep 1
+        clear
+        echo "Starting installation in 4 seconds..."
+        sleep 1
+        clear
+        echo "Starting installation in 3 seconds..."
+        sleep 1
+        clear
+        echo "Starting installation in 2 seconds..."
+        sleep 1
+        clear
+        echo "Starting installation in 1 second..."
+        sleep 1
+        clear
         ram=$(grep MemTotal /proc/meminfo | awk '{print int($2/1024)}')
         fdisk /dev/$disk <<EOF
 g
@@ -484,17 +479,70 @@ EOF
         echo
         echo "The following partitions are required:"
         echo
-        echo " No. | Type | Size"
-        echo "-----|------|----------------------------"
-        echo "   1 | Boot | 256MB to 1GB"
-        echo "   2 | Swap | Same as RAM"
-        echo "   3 | Root | 8GB min, 32GB+ recommended"
+        echo " Type | Size"
+        echo "------|----------------------------"
+        echo " Boot | 256MB to 1GB"
+        echo " Swap | Same as RAM"
+        echo " Root | 8GB min, 32GB+ recommended"
         echo 
         echo "Press any key to open cfdisk."
         read -n 1
         cfdisk
+        clear
+        read -p "Which partition number should be used for root? " rootno
+        clear
+        read -p "Which partition number should be used for boot? (usually 1) " bootno
+        clear
+        read -p "Which partition number should be used for swap? " swapno
+        clear
+        loop=1
+        while [[ $loop == 1 ]]; do
+            clear
+            echo -e '\e[3m'"Format the boot partition? This will remove all data on the partition!"'\e(B\e[m'
+            echo
+            echo -e '\e[36m'"[Y]" '\e(B\e[m'"Yes, format it"
+            echo -e '\e[36m'"[N]" '\e(B\e[m'"No, keep existing data (may cause issues)"
+            read -n 1 choice
+            case $choice in
+                y|Y)
+                    formboot=1
+                    loop=0
+                    ;;
+                n|N)
+                    formboot=0
+                    loop=0
+                    ;;
+                *)
+                    ;;
+            esac
+        done
+        clear
+        echo "Starting installation in 5 seconds..."
+        sleep 1
+        clear
+        echo "Starting installation in 4 seconds..."
+        sleep 1
+        clear
+        echo "Starting installation in 3 seconds..."
+        sleep 1
+        clear
+        echo "Starting installation in 2 seconds..."
+        sleep 1
+        clear
+        echo "Starting installation in 1 second..."
+        sleep 1
+        clear
         ;;
 esac
+if [[ "$disk" == *"d"* ]]; then
+    root="${disk}${rootno}"
+    boot="${disk}${bootno}"
+    swap="${disk}${swapno}"
+else
+    root="${disk}p${rootno}"
+    boot="${disk}p${bootno}"
+    swap="${disk}p${swapno}"
+fi
 case $crypt in
     0)
         mkfs.$rootfs -f /dev/$root
@@ -507,7 +555,9 @@ case $crypt in
         mount /dev/mapper/root /mnt
         ;;
 esac
-mkfs.fat -F32 /dev/$boot
+if [[ $formboot == 1 ]]; then
+    mkfs.fat -F32 /dev/$boot
+fi
 mount --mkdir /dev/$boot /mnt/boot
 mkswap /dev/$swap
 swapon /dev/$swap
