@@ -37,9 +37,9 @@ diskpart(){
         echo "Recommended minimum disk space: 64GB for VMs, 128GB for real hardware"
         read -p "The disk to install to is /dev/" disk
         echo
-        echo -e '\e[3m'"WARNING: The contents of this disk will be erased!"'\e(B\e[m'
+        echo -e '\e[3m'"WARNING: The contents of this disk will be changed or erased!"'\e(B\e[m'
         echo -e '\e[3m'"Double check that you have selected the correct disk!"'\e(B\e[m'
-        echo -e '\e[3m'"This cannot be undone! Are you sure you want to continue?"'\e(B\e[m'
+        echo -e '\e[3m'"Are you sure you want to continue?"'\e(B\e[m'
         echo
         echo -e '\e[36m'"[Y]" '\e(B\e[m'"I understand, continue"
         echo -e '\e[36m'"[N]" '\e(B\e[m'"Choose another disk"
@@ -61,7 +61,7 @@ diskpart(){
         clear
         echo -e '\e[3m'"Choose a partitioning method:"'\e(B\e[m'
         echo
-        echo -e '\e[36m'"[1]" '\e(B\e[m'"Automatic partition layout"
+        echo -e '\e[36m'"[1]" '\e(B\e[m'"Automatic partition layout (uses entire disk)"
         echo -e '\e[36m'"[2]" '\e(B\e[m'"Manual configuration"
         read -n 1 choice
         case $choice in
@@ -286,6 +286,31 @@ user(){
     done
 }
 
+bootent(){
+    loop=1
+    while [[ $loop == 1 ]]; do
+        clear
+        echo -e '\e[3m'"Show boot menu and automatically detect other boot entries (e.g. Windows)?"'\e(B\e[m'
+        echo -e '\e[3m'"You will be asked to add boot entries after the installation has completed."'\e(B\e[m'
+        echo
+        echo -e '\e[36m'"[Y]" '\e(B\e[m'"Yes"
+        echo -e '\e[36m'"[N]" '\e(B\e[m'"No"
+        read -n 1 choice
+        case $choice in
+            y|Y)
+                bootmenu=1
+                loop=0
+                ;;
+            n|N)
+                bootmenu=0
+                loop=0
+                ;;
+            *)
+                ;;
+        esac
+    done
+}
+
 noint(){
     echo
     echo "No internet connection found. Use iwctl to connect to a wireless network."
@@ -320,6 +345,7 @@ diskpart
 pkgs
 sethostname
 user
+bootent
 
 menu=1
 while [[ $menu == 1 ]]; do
@@ -361,6 +387,14 @@ while [[ $menu == 1 ]]; do
     fi
     echo "Username: $uname"
     echo "Password: $star"
+    case $bootmenu in
+        0)
+            echo "Boot menu: Hidden"
+            ;;
+        1)
+            echo "Boot menu: Shown"
+            ;;
+    esac
     echo
     echo -e '\e[3m'"Install with these options?"'\e(B\e[m'
     echo
@@ -374,6 +408,7 @@ while [[ $menu == 1 ]]; do
     echo -e '\e[36m'"[3]" '\e(B\e[m'"Change packages"
     echo -e '\e[36m'"[4]" '\e(B\e[m'"Change hostname"
     echo -e '\e[36m'"[5]" '\e(B\e[m'"Change username and authentication"
+    echo -e '\e[36m'"[6]" '\e(B\e[m'"Change boot menu"
     read -n 1 choice
     case $choice in
         y|Y)
@@ -396,6 +431,9 @@ while [[ $menu == 1 ]]; do
             ;;
         5)
             user
+            ;;
+        6)
+            bootent
             ;;
         *)
             ;;
@@ -422,6 +460,7 @@ echo "su $uname -c ./jdai-usr.sh" >> jdai-efi-2.sh
 echo "git clone https://aur.archlinux.org/yay.git" >> jdai-usr.sh
 echo "cd yay" >> jdai-usr.sh
 echo "makepkg -si --noconfirm" >> jdai-usr.sh
+echo "yay -S --noconfirm limine-entry-tool" >> jdai-usr.sh
 if [[ $extrapkgs == 1 ]]; then
     echo "yay -S --noconfirm firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog" >> jdai-usr.sh
 fi
@@ -435,6 +474,12 @@ if [[ $profile == "Desktop (Hyprland)" ]]; then
     echo "cp kitty.conf ~/.config/kitty" >> jdai-usr.sh
     echo "sudo cp config.jsonc /etc/xdg/waybar" >> jdai-usr.sh
     echo "sudo cp style.css /etc/xdg/waybar" >> jdai-usr.sh
+fi
+if [[ $bootmenu == 1 ]]; then
+    echo "echo" >> jdai-usr.sh
+    echo "echo" >> jdai-usr.sh
+    echo "echo" >> jdai-usr.sh
+    echo "sudo limine-scan" >> jdai-usr.sh
 fi
 
 case $manpart in
@@ -581,7 +626,14 @@ case $crypt in
         ;;
 esac
 touch /mnt/boot/EFI/arch-limine/limine.conf
-echo "timeout: 0" >> /mnt/boot/EFI/arch-limine/limine.conf
+case $bootmenu in
+    0)
+        echo "timeout: 0" >> /mnt/boot/EFI/arch-limine/limine.conf
+        ;;
+    1)
+        echo "timeout: 10" >> /mnt/boot/EFI/arch-limine/limine.conf
+        ;;
+esac
 echo "" >> /mnt/boot/EFI/arch-limine/limine.conf
 echo "/Arch Linux" >> /mnt/boot/EFI/arch-limine/limine.conf
 echo "    protocol: linux" >> /mnt/boot/EFI/arch-limine/limine.conf
@@ -608,7 +660,8 @@ fi
 arch-chroot /mnt useradd -m -G wheel $uname
 arch-chroot /mnt chpasswd <<< "$uname:$pass"
 arch-chroot /mnt bash ./jdai-efi-2.sh
-
+sed -i 's/^\(%wheel ALL=(ALL:ALL) NOPASSWD: ALL\)/# \1/' /mnt/etc/sudoers
+sed -i 's/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/' /mnt/etc/sudoers
 echo
 echo
 echo
