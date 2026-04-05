@@ -193,7 +193,7 @@ pkgs(){
                 loop=0
                 ;;
             6)
-                pkglist="base linux linux-firmware iwd python nano limine sudo efibootmgr networkmanager base-devel"
+                pkglist="base linux linux-firmware git iwd python nano limine sudo efibootmgr networkmanager base-devel"
                 profile="Minimal"
                 loop=0
                 ;;
