@@ -590,7 +590,11 @@ else
 fi
 case $crypt in
     0)
-        mkfs.$rootfs -f /dev/$root
+        if [[ $rootfs == "ext4" ]]; then
+            mkfs.$rootfs /dev/$root
+        else
+            mkfs.$rootfs -f /dev/$root
+        fi
         mount /dev/$root /mnt
         ;;
     1)
