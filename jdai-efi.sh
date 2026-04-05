@@ -290,8 +290,8 @@ bootent(){
     loop=1
     while [[ $loop == 1 ]]; do
         clear
-        echo -e '\e[3m'"Show boot menu and automatically detect other boot entries (e.g. Windows)?"'\e(B\e[m'
-        echo -e '\e[3m'"You will be asked to add boot entries after the installation has completed."'\e(B\e[m'
+        echo -e '\e[3m'"Show boot menu?"'\e(B\e[m'
+        echo -e '\e[3m'"To detect other boot entries (e.g. Windows), install limine-entry-tool and run limine-scan."'\e(B\e[m'
         echo
         echo -e '\e[36m'"[Y]" '\e(B\e[m'"Yes"
         echo -e '\e[36m'"[N]" '\e(B\e[m'"No"
@@ -460,7 +460,7 @@ echo "su $uname -c ./jdai-usr.sh" >> jdai-efi-2.sh
 echo "git clone https://aur.archlinux.org/yay.git" >> jdai-usr.sh
 echo "cd yay" >> jdai-usr.sh
 echo "makepkg -si --noconfirm" >> jdai-usr.sh
-echo "yay -S --noconfirm limine-entry-tool" >> jdai-usr.sh
+#echo "yay -S --noconfirm limine-entry-tool" >> jdai-usr.sh
 if [[ $extrapkgs == 1 ]]; then
     echo "yay -S --noconfirm firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog" >> jdai-usr.sh
 fi
@@ -475,12 +475,12 @@ if [[ $profile == "Desktop (Hyprland)" ]]; then
     echo "sudo cp config.jsonc /etc/xdg/waybar" >> jdai-usr.sh
     echo "sudo cp style.css /etc/xdg/waybar" >> jdai-usr.sh
 fi
-if [[ $bootmenu == 1 ]]; then
-    echo "echo" >> jdai-usr.sh
-    echo "echo" >> jdai-usr.sh
-    echo "echo" >> jdai-usr.sh
-    echo "sudo limine-scan" >> jdai-usr.sh
-fi
+#if [[ $bootmenu == 1 ]]; then
+#    echo "echo" >> jdai-usr.sh
+#    echo "echo" >> jdai-usr.sh
+#    echo "echo" >> jdai-usr.sh
+#    echo "sudo limine-scan" >> jdai-usr.sh
+#fi
 
 case $manpart in
     0)
