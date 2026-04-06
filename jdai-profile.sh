@@ -224,7 +224,7 @@ if [[ $extrapkgs == 1 ]]; then
   yay -S --noconfirm firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog exfatprogs f2fs-tools hfsprogs jfsutils ntfs-3g udftools apfsprogs zfs-utils
 fi
 
-if [[ $profile == "Hyprland" ]]; then
+if [[ $pkglist == *"hyprland"* ]]; then
     git clone https://github.com/JaredDinosaur/hyprconf
     cd hyprconf
     sudo mkdir /home/$uname/.config/hypr
