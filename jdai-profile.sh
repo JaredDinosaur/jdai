@@ -33,22 +33,22 @@ while [[ $loop == 1 ]]; do
     case $choice in
         1)
             pkglist="firefox flatpak partitionmanager dolphin discover plasma sddm vlc konsole network-manager-applet limine-entry-tool"
-            profile="Desktop (Plasma)"
+            profile="Plasma"
             loop=0
             ;;
         2)
             pkglist="firefox flatpak partitionmanager dolphin discover sddm vlc hyprland kitty wofi waybar hyprpaper konsole network-manager-applet dunst wireplumber noto-fonts pipewire-pulse nerd-fonts sof-firmware sddm-kcm plymouth-kcm systemsettings breeze breeze-cursors breeze-plymouth flatpak-kcm plasma-integration limine-entry-tool"
-            profile="Desktop (Hyprland)"
+            profile="Hyprland"
             loop=0
             ;;
         3)
             pkglist="firefox flatpak xfce4 xfce4-goodies discover lightdm-gtk-greeter lightdm-gtk-greeter-settings vlc network-manager-applet limine-entry-tool"
-            profile="Desktop (Xfce)"
+            profile="Xfce"
             loop=0
             ;;
         4)
             pkglist="firefox flatpak partitionmanager discover lightdm-gtk-greeter lightdm-gtk-greeter-settings lxqt vlc network-manager-applet limine-entry-tool"
-            profile="Desktop (LXQt)"
+            profile="LXQt"
             loop=0
             ;;
         5)
@@ -182,7 +182,7 @@ if [[ -e /dev/mapper/root ]]; then
             y|Y)
                 clear
                 lsblk -r > lsblk.tmp
-                lukspart=$(awk '/root/ { print prev } { prev = $0 }' lsblk.tmp | awk '{print $1}')
+                lukspart="$(awk '/root/ { print prev } { prev = $0 }' lsblk.tmp | awk '{print $1}')"
                 sudo cryptsetup luksChangeKey /dev/$lukspart
                 loop=0
                 ;;
@@ -201,13 +201,13 @@ if [[ $extrapkgs == 1 ]]; then
   yay -S --noconfirm firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog exfatprogs f2fs-tools hfsprogs jfsutils ntfs-3g udftools apfsprogs zfs-utils
 fi
 
-if [[ $profile == "Desktop (Hyprland)" ]]; then
+if [[ $profile == "Hyprland" ]]; then
     git clone https://github.com/JaredDinosaur/hyprconf
     cd hyprconf
-    mkdir /home/$uname/.config/hypr
-    mkdir /home/$uname/.config/kitty
-    cp hyprland.conf /home/$uname/.config/hypr
-    cp kitty.conf /home/$uname/.config/kitty
+    sudo mkdir /home/$uname/.config/hypr
+    sudo mkdir /home/$uname/.config/kitty
+    sudo cp hyprland.conf /home/$uname/.config/hypr
+    sudo cp kitty.conf /home/$uname/.config/kitty
     sudo cp config.jsonc /etc/xdg/waybar
     sudo cp style.css /etc/xdg/waybar
 fi
