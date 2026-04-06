@@ -186,7 +186,7 @@ esac
 
 sed -i "s/#Color/Color/" /etc/pacman.conf
 sed -i "s/ParallelDownloads = 5/ParallelDownloads = 1/" /etc/pacman.conf
-sed -i "s/#DisableSandbox/ILoveCandy/" /etc/pacman.conf
+sed -i "s/#NoProgressBar/ILoveCandy/" /etc/pacman.conf
 pacman -Sy --noconfirm hwinfo
 setlocale
 diskpart
