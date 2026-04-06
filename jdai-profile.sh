@@ -262,5 +262,7 @@ echo "Done! Rebooting in 2 seconds..."
 sleep 1
 echo "Done! Rebooting in 1 second..."
 sleep 1
+clear
+echo "Final cleanup, enter 'oem' to continue..."
 sudo userdel -rf oem
 reboot
