@@ -204,10 +204,10 @@ fi
 if [[ $profile == "Desktop (Hyprland)" ]]; then
     git clone https://github.com/JaredDinosaur/hyprconf
     cd hyprconf
-    mkdir ~/.config/hypr
-    mkdir ~/.config/kitty
-    cp hyprland.conf ~/.config/hypr
-    cp kitty.conf ~/.config/kitty
+    mkdir /home/$uname/.config/hypr
+    mkdir /home/$uname/.config/kitty
+    cp hyprland.conf /home/$uname/.config/hypr
+    cp kitty.conf /home/$uname/.config/kitty
     sudo cp config.jsonc /etc/xdg/waybar
     sudo cp style.css /etc/xdg/waybar
 fi
