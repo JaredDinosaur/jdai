@@ -226,7 +226,7 @@ sudo systemctl enable lightdm
 
 echo "sudo userdel -r oem" > /home/$uname/.bash_profile
 echo "rm -f ~/.bash_profile" > /home/$uname/.bash_profile
-sudo rm -f /etc/sddm.conf.d/autologin.conf
+sudo rm -rf /etc/systemd/system/getty@tty1.service.d
 sudo sed -i "s/^\(%wheel ALL=(ALL:ALL) NOPASSWD: ALL\)/# \1/" /mnt/etc/sudoers
 sudo sed -i "s/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/" /mnt/etc/sudoers
 
