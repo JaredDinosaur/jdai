@@ -248,8 +248,8 @@ sudo systemctl enable sddm
 sudo systemctl enable lightdm
 
 sudo rm -rf /etc/systemd/system/getty@tty1.service.d
-sudo sed -i "s/^\(%wheel ALL=(ALL:ALL) NOPASSWD: ALL\)/# \1/" /mnt/etc/sudoers
-sudo sed -i "s/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/" /mnt/etc/sudoers
+sudo sed -i "s/^\(%wheel ALL=(ALL:ALL) NOPASSWD: ALL\)/# \1/" /etc/sudoers
+sudo sed -i "s/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/" /etc/sudoers
 
 echo
 echo
