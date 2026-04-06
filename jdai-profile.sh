@@ -161,6 +161,29 @@ while [[ $valid == 0 ]]; do
     fi
 done
 
+loop=1
+while [[ $loop == 1 ]]; do
+    clear
+    echo -e '\e[3m'"Show boot menu?"'\e(B\e[m'
+    echo -e '\e[3m'"You will be asked which boot entries to add later."'\e(B\e[m'
+    echo
+    echo -e '\e[36m'"[Y]" '\e(B\e[m'"Yes"
+    echo -e '\e[36m'"[N]" '\e(B\e[m'"No"
+    read -n 1 choice
+    case $choice in
+        y|Y)
+            bootmenu=1
+            loop=0
+            ;;
+        n|N)
+            bootmenu=0
+            loop=0
+            ;;
+        *)
+            ;;
+    esac
+done
+
 if [[ $rootpass == "" ]]; then
     sudo passwd -l root
 else
@@ -224,8 +247,6 @@ sudo systemctl enable upower
 sudo systemctl enable sddm
 sudo systemctl enable lightdm
 
-echo "sudo userdel -r oem" > /home/$uname/.bash_profile
-echo "rm -f ~/.bash_profile" > /home/$uname/.bash_profile
 sudo rm -rf /etc/systemd/system/getty@tty1.service.d
 sudo sed -i "s/^\(%wheel ALL=(ALL:ALL) NOPASSWD: ALL\)/# \1/" /mnt/etc/sudoers
 sudo sed -i "s/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/" /mnt/etc/sudoers
@@ -243,4 +264,5 @@ echo "Done! Rebooting in 2 seconds..."
 sleep 1
 echo "Done! Rebooting in 1 second..."
 sleep 1
+sudo userdel -rf oem
 reboot
