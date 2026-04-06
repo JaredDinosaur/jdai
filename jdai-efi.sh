@@ -339,6 +339,7 @@ esac
 
 sed -i "s/#Color/Color/" /etc/pacman.conf
 sed -i "s/ParallelDownloads = 5/ParallelDownloads = 1/" /etc/pacman.conf
+sed -i "s/#DisableSandbox/ILoveCandy/" /etc/pacman.conf
 pacman -Sy --noconfirm hwinfo
 setlocale
 diskpart
@@ -462,7 +463,7 @@ echo "cd yay" >> jdai-usr.sh
 echo "makepkg -si --noconfirm" >> jdai-usr.sh
 #echo "yay -S --noconfirm limine-entry-tool" >> jdai-usr.sh
 if [[ $extrapkgs == 1 ]]; then
-    echo "yay -S --noconfirm firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog exfatprogs f2fs-tools hfsprogs jfsutils ntfs-3g udftools apfsprogs reiserfsprogs reiser4progs zfs-utils" >> jdai-usr.sh
+    echo "yay -S --noconfirm firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog exfatprogs f2fs-tools hfsprogs jfsutils ntfs-3g udftools apfsprogs zfs-utils" >> jdai-usr.sh
 fi
 if [[ $profile == "Desktop (Hyprland)" ]]; then
     echo "cd .." >> jdai-usr.sh
