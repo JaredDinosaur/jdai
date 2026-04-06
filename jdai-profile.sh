@@ -32,22 +32,22 @@ while [[ $loop == 1 ]]; do
     read -n 1 choice
     case $choice in
         1)
-            pkglist="firefox flatpak partitionmanager dolphin discover plasma vlc konsole network-manager-applet limine-entry-tool"
+            pkglist="firefox flatpak partitionmanager dolphin discover plasma sddm vlc konsole network-manager-applet limine-entry-tool"
             profile="Desktop (Plasma)"
             loop=0
             ;;
         2)
-            pkglist="firefox flatpak partitionmanager dolphin discover vlc hyprland kitty wofi waybar hyprpaper konsole network-manager-applet dunst wireplumber noto-fonts pipewire-pulse nerd-fonts sof-firmware sddm-kcm plymouth-kcm systemsettings breeze breeze-cursors breeze-plymouth flatpak-kcm plasma-integration limine-entry-tool"
+            pkglist="firefox flatpak partitionmanager dolphin discover sddm vlc hyprland kitty wofi waybar hyprpaper konsole network-manager-applet dunst wireplumber noto-fonts pipewire-pulse nerd-fonts sof-firmware sddm-kcm plymouth-kcm systemsettings breeze breeze-cursors breeze-plymouth flatpak-kcm plasma-integration limine-entry-tool"
             profile="Desktop (Hyprland)"
             loop=0
             ;;
         3)
-            pkglist="firefox flatpak xfce4 xfce4-goodies discover vlc network-manager-applet limine-entry-tool"
+            pkglist="firefox flatpak xfce4 xfce4-goodies discover lightdm-gtk-greeter lightdm-gtk-greeter-settings vlc network-manager-applet limine-entry-tool"
             profile="Desktop (Xfce)"
             loop=0
             ;;
         4)
-            pkglist="firefox flatpak partitionmanager discover lxqt vlc network-manager-applet limine-entry-tool"
+            pkglist="firefox flatpak partitionmanager discover lightdm-gtk-greeter lightdm-gtk-greeter-settings lxqt vlc network-manager-applet limine-entry-tool"
             profile="Desktop (LXQt)"
             loop=0
             ;;
@@ -221,6 +221,8 @@ fi
 sudo systemctl enable accounts-daemon
 sudo systemctl enable udisks2
 sudo systemctl enable upower
+sudo systemctl enable sddm
+sudo systemctl enable lightdm
 
 echo "sudo userdel -r oem" > /home/$uname/.bash_profile
 echo "rm -f ~/.bash_profile" > /home/$uname/.bash_profile
@@ -239,6 +241,6 @@ echo "Done! Rebooting in 3 seconds..."
 sleep 1
 echo "Done! Rebooting in 2 seconds..."
 sleep 1
-echo "Done! Rebooting in 1 seconds..."
+echo "Done! Rebooting in 1 second..."
 sleep 1
-sudo reboot
+reboot
