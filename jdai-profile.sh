@@ -182,7 +182,7 @@ if [[ -e /dev/mapper/root ]]; then
             y|Y)
                 clear
                 lsblk -r > lsblk.tmp
-                $lukspart=$(awk '/root/ { print prev } { prev = $0 }' lsblk.tmp | awk '{print $1}')
+                lukspart=$(awk '/root/ { print prev } { prev = $0 }' lsblk.tmp | awk '{print $1}')
                 sudo cryptsetup luksChangeKey /dev/$lukspart
                 loop=0
                 ;;
