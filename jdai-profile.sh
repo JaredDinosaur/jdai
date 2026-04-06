@@ -225,13 +225,12 @@ if [[ $extrapkgs == 1 ]]; then
 fi
 
 git clone https://github.com/JaredDinosaur/hyprconf
-cd hyprconf
 sudo mkdir /home/$uname/.config/hypr
 sudo mkdir /home/$uname/.config/kitty
-sudo cp hyprland.conf /home/$uname/.config/hypr
-sudo cp kitty.conf /home/$uname/.config/kitty
-sudo cp config.jsonc /etc/xdg/waybar
-sudo cp style.css /etc/xdg/waybar
+sudo cp /home/oem/hyprconf/hyprland.conf /home/$uname/.config/hypr
+sudo cp /home/oem/hyprconf/kitty.conf /home/$uname/.config/kitty
+sudo cp /home/oem/hyprconf/config.jsonc /etc/xdg/waybar
+sudo cp /home/oem/hyprconf/style.css /etc/xdg/waybar
 
 if [[ $bootmenu == 1 ]]; then
     sudo sed -i "s/timeout: 0/timeout: 10" /boot/EFI/arch-limine/limine.conf
