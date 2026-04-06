@@ -398,7 +398,7 @@ fi
 mount --mkdir /dev/$boot /mnt/boot
 mkswap /dev/$swap
 swapon /dev/$swap
-pacstrap -K /mnt base linux linux-firmware screenfetch tree htop plymouth iwd python git nano dialog limine sudo efibootmgr networkmanager base-devel blueman btrfs-progs dosfstools e2fsprogs xfsprogs sddm
+pacstrap -K /mnt base linux linux-firmware screenfetch tree htop plymouth iwd python git nano dialog limine sudo efibootmgr networkmanager base-devel blueman btrfs-progs dosfstools e2fsprogs xfsprogs
 genfstab -U /mnt >> /mnt/etc/fstab
 echo "en_${reg}.UTF-8 UTF-8" > /mnt/etc/locale.gen
 echo "LANG=en_${reg}.UTF-8" > /mnt/etc/locale.conf
@@ -443,12 +443,11 @@ arch-chroot /mnt useradd -m -G wheel oem
 arch-chroot /mnt chpasswd <<< "oem:oem"
 arch-chroot /mnt bash ./jdai-efi-2.sh
 
-mkdir /mnt/etc/sddm.conf.d
-touch /mnt/etc/sddm.conf.d/autologin.conf
-echo "[Autologin]" >> /mnt/etc/sddm.conf.d/autologin.conf
-echo "User=oem" >> /mnt/etc/sddm.conf.d/autologin.conf
-echo "Session=" >> /mnt/etc/sddm.conf.d/autologin.conf
-echo "Relogin=true" >> /mnt/etc/sddm.conf.d/autologin.conf
+mkdir /mnt/etc/systemd/system/getty@tty1.service.d
+touch /mnt/etc/systemd/system/getty@tty1.service.d/autologin.conf
+echo "[Service]" >> /mnt/etc/systemd/system/getty@tty1.service.d/autologin.conf
+echo "ExecStart=" >> /mnt/etc/systemd/system/getty@tty1.service.d/autologin.conf
+echo "ExecStart=-/sbin/agetty --autologin oem --noclear %I \$TERM" >> /mnt/etc/systemd/system/getty@tty1.service.d/autologin.conf
 
 rm /mnt/home/oem/.bash_profile
 cp /mnt/home/oem/jdai-profile.sh /mnt/home/oem/.bash_profile
