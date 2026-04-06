@@ -448,6 +448,8 @@ echo "User=oem" >> /mnt/etc/sddm.conf.d/autologin.conf
 echo "Session=" >> /mnt/etc/sddm.conf.d/autologin.conf
 echo "Relogin=true" >> /mnt/etc/sddm.conf.d/autologin.conf
 
+rm /mnt/home/oem/.bash_profile
+
 echo
 echo
 echo
