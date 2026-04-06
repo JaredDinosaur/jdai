@@ -180,7 +180,6 @@ if [[ -e /dev/mapper/root ]]; then
         read -n 1 choice
         case $choice in
             y|Y)
-                yay -S --noconfirm lvm2
                 clear
                 lsblk -r > lsblk.tmp
                 $lukspart=$(awk '/root/ { print prev } { prev = $0 }' lsblk.tmp | awk '{print $1}')
