@@ -442,6 +442,7 @@ arch-chroot /mnt useradd -m -G wheel oem
 arch-chroot /mnt chpasswd <<< "oem:oem"
 arch-chroot /mnt bash ./jdai-efi-2.sh
 
+mkdir /mnt/etc/sddm.conf.d
 touch /mnt/etc/sddm.conf.d/autologin.conf
 echo "[Autologin]" >> /mnt/etc/sddm.conf.d/autologin.conf
 echo "User=oem" >> /mnt/etc/sddm.conf.d/autologin.conf
