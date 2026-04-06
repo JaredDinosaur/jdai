@@ -339,7 +339,7 @@ esac
 
 sed -i "s/#Color/Color/" /etc/pacman.conf
 sed -i "s/ParallelDownloads = 5/ParallelDownloads = 1/" /etc/pacman.conf
-sed -i "s/#DisableSandbox/ILoveCandy/" /etc/pacman.conf
+sed -i "s/#NoProgressBar/ILoveCandy/" /etc/pacman.conf
 pacman -Sy --noconfirm hwinfo
 setlocale
 diskpart
@@ -653,7 +653,7 @@ esac
 echo "    module_path: boot():/initramfs-linux.img" >> /mnt/boot/EFI/arch-limine/limine.conf
 sed -i "s/#Color/Color/" /mnt/etc/pacman.conf
 sed -i "s/ParallelDownloads = 5/ParallelDownloads = 1/" /mnt/etc/pacman.conf
-sed -i "s/#DisableSandbox/ILoveCandy/" /mnt/etc/pacman.conf
+sed -i "s/#NoProgressBar/ILoveCandy/" /mnt/etc/pacman.conf
 sed -i "s/#[multilib]/[multilib]/" /mnt/etc/pacman.conf
 sed -i 's/^# \(%wheel ALL=(ALL:ALL) NOPASSWD: ALL\)/\1/' /mnt/etc/sudoers
 
