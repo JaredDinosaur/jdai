@@ -262,6 +262,7 @@ echo "systemctl enable upower" >> jdai-efi-2.sh
 echo "systemctl enable sddm" >> jdai-efi-2.sh
 echo "efibootmgr --create --disk /dev/${disk} --part 1 --label \"Arch Linux\" --loader '\\EFI\\arch-limine\\BOOTX64.EFI' --unicode" >> jdai-efi-2.sh
 echo "cp jdai-usr.sh /home/oem" >> jdai-efi-2.sh
+echo "cp jdai-profile.sh /home/oem" >> jdai-efi-2.sh
 echo "cd /home/oem" >> jdai-efi-2.sh
 echo "su oem -c ./jdai-usr.sh" >> jdai-efi-2.sh
 
