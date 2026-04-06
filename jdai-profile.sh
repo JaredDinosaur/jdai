@@ -224,16 +224,14 @@ if [[ $extrapkgs == 1 ]]; then
   yay -S --noconfirm firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog exfatprogs f2fs-tools hfsprogs jfsutils ntfs-3g udftools apfsprogs zfs-utils
 fi
 
-if [[ $pkglist == *"hyprland"* ]]; then
-    git clone https://github.com/JaredDinosaur/hyprconf
-    cd hyprconf
-    sudo mkdir /home/$uname/.config/hypr
-    sudo mkdir /home/$uname/.config/kitty
-    sudo cp hyprland.conf /home/$uname/.config/hypr
-    sudo cp kitty.conf /home/$uname/.config/kitty
-    sudo cp config.jsonc /etc/xdg/waybar
-    sudo cp style.css /etc/xdg/waybar
-fi
+git clone https://github.com/JaredDinosaur/hyprconf
+cd hyprconf
+sudo mkdir /home/$uname/.config/hypr
+sudo mkdir /home/$uname/.config/kitty
+sudo cp hyprland.conf /home/$uname/.config/hypr
+sudo cp kitty.conf /home/$uname/.config/kitty
+sudo cp config.jsonc /etc/xdg/waybar
+sudo cp style.css /etc/xdg/waybar
 
 if [[ $bootmenu == 1 ]]; then
     sudo sed -i "s/timeout: 0/timeout: 10" /boot/EFI/arch-limine/limine.conf
@@ -248,8 +246,8 @@ sudo systemctl enable sddm
 sudo systemctl enable lightdm
 
 sudo rm -rf /etc/systemd/system/getty@tty1.service.d
-sudo sed -i "s/^\(%wheel ALL=(ALL:ALL) NOPASSWD: ALL\)/# \1/" /etc/sudoers
 sudo sed -i "s/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/" /etc/sudoers
+sudo sed -i "s/^\(%wheel ALL=(ALL:ALL) NOPASSWD: ALL\)/# \1/" /etc/sudoers
 
 echo
 echo
