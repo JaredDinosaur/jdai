@@ -20,8 +20,10 @@
 
 # How to install Arch with this script (applies to jdai-efi.sh only)
 ### None of these scripts will work without an internet connection! You will need an Ethernet cable or Wi-Fi.
-1) Put the Arch Linux installation media ([DOWNLOAD LINK](https://www.mirrorservice.org/sites/ftp.archlinux.org/iso/2026.04.01/archlinux-x86_64.iso)) onto a USB drive using [Rufus](https://rufus.ie/) or [Ventoy](https://www.ventoy.net/en/download.html). If you are using a virtual machine, you can instead select the .iso file to use with the virtual CD/DVD drive.
-* The next steps involve entering the BIOS and boot menu. To do this, turn on your machine and immediately start mashing a specific key on your keyboard. If you don't know which key to press, check [here](http://www.auditiait.es/en/list-of-keys-to-access-to-bios/) or Google your machine/motherboard model. If you are installing to a virtual machine, these steps are usually not needed.
+
+## Using a real machine:
+1) Put the Arch Linux installation media ([DOWNLOAD LINK](https://www.mirrorservice.org/sites/ftp.archlinux.org/iso/2026.04.01/archlinux-x86_64.iso)) onto a USB drive using [Rufus](https://rufus.ie/) or [Ventoy](https://www.ventoy.net/en/download.html).
+* The next steps involve entering the BIOS and boot menu. To do this, turn on your machine and immediately start mashing a specific key on your keyboard. If you don't know which key to press, check [here](http://www.auditiait.es/en/list-of-keys-to-access-to-bios/) or Google your machine/motherboard model.
 * WARNING: If you are planning to install alongside Windows, please ensure that BitLocker is disabled on your C: drive or that you have the recovery key on another device! If you do not do this, you may be locked out of Windows!
 3) On the machine you wish to install Arch Linux to, enter the BIOS and ensure that Secure Boot is disabled and USB booting is enabled.
 4) Insert the USB drive, save and exit the BIOS and enter the boot menu.
@@ -29,7 +31,6 @@
 5) Select the USB drive in the menu, either using your mouse/touchpad or with the arrow keys and Enter.
 6) Once you see the text `root@archiso`, enter the following commands:
 * If your Wi-Fi password contains symbols such as @ or #, you may need to change the keyboard layout (default is US) using loadkeys. For example, to load the British keyboard layout, use `loadkeys uk`. To see all available keyboard layouts, run `localectl list-keymaps`.
-* Virtual machines automatically connect to the internet, even if your actual machine uses Wi-Fi.
 * Only run these commands if you need to connect to Wi-Fi:
 ```
 iwctl station list
@@ -37,6 +38,23 @@ iwctl station (device name, usually wlan0) get-networks
 iwctl station (device name) connect (your network)
 ```
 After connecting to Wi-Fi (if needed), run these commands:
+```
+pacman-key --init
+pacman-key --populate
+pacman -Sy --noconfirm git archlinux-keyring
+git clone https://github.com/JaredDinosaur/jdai
+cd jdai
+chmod +x jdai-efi.sh
+./jdai-efi.sh
+```
+Then follow the script as normal.
+
+## Using a virtual machine:
+1) Create a new virtual machine. If a Windows 10 template option exists, it is recommended to use it. Otherwise, recommended VM settings are: 4 CPU cores, 4GB RAM and 64GB disk space. Ensure that the VM has network access.
+2) Download the Arch Linux installation media ([DOWNLOAD LINK](https://www.mirrorservice.org/sites/ftp.archlinux.org/iso/2026.04.01/archlinux-x86_64.iso)), and select the .iso file to use with the virtual CD/DVD drive.
+3) Power on the virtual machine.
+* Warning: The Arch installation media beeps upon boot by default. This might be louder than you expect.
+4) Once you see the text `root@archiso`, enter the following commands:
 ```
 pacman-key --init
 pacman-key --populate
