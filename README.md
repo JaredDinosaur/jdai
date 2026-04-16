@@ -25,11 +25,11 @@
 1) Put the Arch Linux installation media ([DOWNLOAD LINK](https://www.mirrorservice.org/sites/ftp.archlinux.org/iso/2026.04.01/archlinux-x86_64.iso)) onto a USB drive using [Rufus](https://rufus.ie/) or [Ventoy](https://www.ventoy.net/en/download.html).
 * The next steps involve entering the BIOS and boot menu. To do this, turn on your machine and immediately start mashing a specific key on your keyboard. If you don't know which key to press, check [here](http://www.auditiait.es/en/list-of-keys-to-access-to-bios/) or Google your machine/motherboard model.
 * WARNING: If you are planning to install alongside Windows, please ensure that BitLocker is disabled on your C: drive or that you have the recovery key on another device! If you do not do this, you may be locked out of Windows!
-3) On the machine you wish to install Arch Linux to, enter the BIOS and ensure that Secure Boot is disabled and USB booting is enabled.
-4) Insert the USB drive, save and exit the BIOS and enter the boot menu.
+2) On the machine you wish to install Arch Linux to, enter the BIOS and ensure that Secure Boot is disabled and USB booting is enabled.
+3) Insert the USB drive, save and exit the BIOS and enter the boot menu.
 * Warning: The Arch installation media beeps upon boot by default. This might be louder than you expect.
-5) Select the USB drive in the menu, either using your mouse/touchpad or with the arrow keys and Enter.
-6) Once you see the text `root@archiso`, enter the following commands:
+4) Select the USB drive in the menu, either using your mouse/touchpad or with the arrow keys and Enter.
+5) Once you see the text `root@archiso`, enter the following commands:
 * If your Wi-Fi password contains symbols such as @ or #, you may need to change the keyboard layout (default is US) using loadkeys. For example, to load the British keyboard layout, use `loadkeys uk`. To see all available keyboard layouts, run `localectl list-keymaps`.
 * Only run these commands if you need to connect to Wi-Fi:
 ```
