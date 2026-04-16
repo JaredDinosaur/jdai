@@ -2,7 +2,7 @@
 
 **jdai-efi.sh:** The main script. It is strongly recommended to use this one.
 
-**jdai.sh:** Older, less polished script for BIOS systems.
+**jdai.sh:** Older, less polished script for legacy systems.
 
 **jdai-efi-oem.sh:** Allows installation for another user, partially completing the install and running a setup script on startup. Currently a work in progress, may be unstable with some configurations.
 
