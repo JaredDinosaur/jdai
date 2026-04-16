@@ -1,12 +1,22 @@
 # File descriptions (in order of importance)
+
 **jdai-efi.sh:** The main script. It is strongly recommended to use this one.
+
 **jdai.sh:** Older, less polished script for BIOS systems.
+
 **jdai-efi-oem.sh:** Allows installation for another user, partially completing the install and running a setup script on startup. Currently a work in progress, may be unstable with some configurations.
+
 **jdai-profile.sh:** Post-setup script run on startup, used by jdai-efi-oem.sh
+
 **jdai-efi-2.sh:** Secondary script created and run by jdai-efi.sh - performs tasks within chroot.
+
 **jdai-usr.sh:** Tertiary script created and run by jdai-efi.sh - performs tasks within chroot as the created user.
+
 **README.md:** This text.
+
 **jdai.py.old:** Deprecated Python version, will not be updated.
+
+---
 
 # How to install Arch with this script (applies to jdai-efi.sh only)
 ### None of these scripts will work without an internet connection! You will need an Ethernet cable or Wi-Fi.
@@ -36,42 +46,60 @@ chmod +x jdai-efi.sh
 ```
 Then follow the script as normal.
 
-
+---
 
 # Which options should I choose?
 
 ## Filesystems
+
 **ext4:** The default option, balances performance and simplicity
+
 **Btrfs:** Has copy-on-write functionality for easy backups, good for data integrity but may slightly reduce performance
+
 **XFS:** High performance filesystem, good for large drives and servers but is slightly more complicated
 
 ## Disk encryption
+
 This will ask you for a password on every startup. It's not an essential feature, but is nice for users who want more security. It can cause issues with boot splash screens, and cannot be unlocked if you forget the password.
 
 ## Profile
+
 **Desktop (Plasma):** Easy-to-use Windows-like desktop which is highly customisable and stable, but may be slower on low-end machines.
+
 **Desktop (Hyprland):** Lightweight, extremely configurable tiling window manager, however is prone to being unstable and buggy, especially on virtual machines.
+
 **Desktop (Xfce):** Somewhat Mac-like desktop which is fast and customisable, but slightly more complicated than Plasma.
+
 **Desktop (LXQt):** More advanced but very lightweight Windows-like desktop, ideal for low-end machines.
+
 **Command line:** Basic text interface with a few utilities, ideal for those who want to install a different desktop environment.
+
 **Minimal:** The most basic set of packages with no extras, recommended for servers or extremely slow machines.
 
 ## Additional packages
+
 Includes packages such as extra terminal utilities, Firefox with uBlock Origin (an ad blocker), VLC media player, and support for more filesystems like NTFS (Windows filesystem) and APFS (Mac filesystem).
+
 These packages may fail to install if the profile is set to Minimal, although having additional packages with the Minimal configuration already isn't a good idea.
 
 ## Hostname and username
+
 The simpler the better, up to 63 characters. Try to keep it to lowercase letters, as numbers or dashes can cause issues at the start or end of a name.
+
 Spaces and special characters (other than -) are forbidden and **will** cause issues if included.
 
 ## Root password
+
 Using the same password as your normal user is easier to remember.
+
 If the password is left blank, the user will be asked whether to lock the root account. This is not recommended and can be changed with `sudo chpasswd`.
 
 ## Boot menu
+
 Automatic entry detection (such as Windows) is currently broken and therefore disabled. It can be done after installation by running `yay -S --noconfirm limine-entry-tool` and `sudo limine-scan`.
+
 If the boot menu is shown, it will automatically boot into Arch after 10 seconds if there is no input from the user.
 
-
+---
 
 #### And that's it! From my testing, installation takes around 15 minutes, but this can vary based on how fast your internet and computer are. Enjoy your Arch!
