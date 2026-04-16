@@ -50,7 +50,7 @@ chmod +x jdai-efi.sh
 Then follow the script as normal.
 
 ## Using a virtual machine:
-1) Create a new virtual machine. If a Windows 10 template option exists, it is recommended to use it. Otherwise, recommended VM settings are: 4 CPU cores, 4GB RAM and 64GB disk space. Ensure that the VM boots in UEFI mode instead of BIOS/Legacy, and that it has network access.
+1) Create a new virtual machine. If a Windows 10 template option exists, it is recommended to use it. Otherwise, recommended VM settings are: 4 CPU cores, 4GB RAM, and 64GB disk space. Ensure that the VM boots in UEFI mode instead of BIOS/Legacy, and that it has network access.
 2) Download the Arch Linux installation media ([DOWNLOAD LINK](https://www.mirrorservice.org/sites/ftp.archlinux.org/iso/2026.04.01/archlinux-x86_64.iso)), and select the .iso file to use with the virtual CD/DVD drive.
 3) Power on the virtual machine.
 * Warning: The Arch installation media beeps upon boot by default. This might be louder than you expect.
