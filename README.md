@@ -67,7 +67,7 @@ This will ask you for a password on every startup. It's not an essential feature
 
 **Desktop (Plasma):** Easy-to-use Windows-like desktop which is highly customisable and stable, but may be slower on low-end machines.
 
-**Desktop (Hyprland):** Lightweight, extremely configurable tiling window manager, however is prone to being unstable and buggy, especially on virtual machines.
+**Desktop (Hyprland):** Lightweight, extremely configurable tiling window manager; however, it is hugely complicated and prone to being unstable and buggy, especially on virtual machines.
 
 **Desktop (Xfce):** Somewhat Mac-like desktop which is fast and customisable, but slightly more complicated than Plasma.
 
