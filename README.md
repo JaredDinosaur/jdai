@@ -22,7 +22,7 @@
 ### None of these scripts will work without an internet connection! You will need an Ethernet cable or Wi-Fi.
 
 ## Using a real machine:
-1) Put the Arch Linux installation media ([DOWNLOAD LINK](https://www.mirrorservice.org/sites/ftp.archlinux.org/iso/2026.04.01/archlinux-x86_64.iso)) onto a USB drive using [Rufus](https://rufus.ie/) or [Ventoy](https://www.ventoy.net/en/download.html).
+1) Put the Arch Linux installation media ([DOWNLOAD LINK](https://www.mirrorservice.org/sites/ftp.archlinux.org/iso/latest/archlinux-x86_64.iso)) onto a USB drive using [Rufus](https://rufus.ie/) or [Ventoy](https://www.ventoy.net/en/download.html).
 * The next steps involve entering the BIOS and boot menu. To do this, turn on your machine and immediately start mashing a specific key on your keyboard. If you don't know which key to press, check [here](http://www.auditiait.es/en/list-of-keys-to-access-to-bios/) or Google your machine/motherboard model.
 * WARNING: If you are planning to install alongside Windows, please ensure that BitLocker is disabled on your C: drive or that you have the recovery key on another device! If you do not do this, you may be locked out of Windows!
 2) On the machine you wish to install Arch Linux to, enter the BIOS and ensure that Secure Boot is disabled and USB booting is enabled.
@@ -51,7 +51,7 @@ Then follow the script as normal.
 
 ## Using a virtual machine:
 1) Create a new virtual machine. If a Windows 10 template option exists, it is recommended to use it. Otherwise, recommended VM settings are: 4 CPU cores, 4GB RAM, and 64GB disk space. Ensure that the VM boots in UEFI mode instead of BIOS/Legacy, and that it has network access.
-2) Download the Arch Linux installation media ([DOWNLOAD LINK](https://www.mirrorservice.org/sites/ftp.archlinux.org/iso/2026.04.01/archlinux-x86_64.iso)), and select the .iso file to use with the virtual CD/DVD drive.
+2) Download the Arch Linux installation media ([DOWNLOAD LINK](https://www.mirrorservice.org/sites/ftp.archlinux.org/iso/latest/archlinux-x86_64.iso)), and select the .iso file to use with the virtual CD/DVD drive.
 3) Power on the virtual machine.
 * Warning: The Arch installation media beeps upon boot by default. This might be louder than you expect.
 4) Once you see the text `root@archiso`, enter the following commands:
