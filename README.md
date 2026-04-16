@@ -29,6 +29,7 @@
 5) Select the USB drive in the menu, either using your mouse/touchpad or with the arrow keys and Enter.
 6) Once you see the text `root@archiso`, enter the following commands:
 * If your Wi-Fi password contains symbols such as @ or #, you may need to change the keyboard layout (default is US) using loadkeys. For example, to load the British keyboard layout, use `loadkeys uk`. To see all available keyboard layouts, run `localectl list-keymaps`.
+* Virtual machines automatically connect to the internet, even if your actual machine uses Wi-Fi.
 * Only run these commands if you need to connect to Wi-Fi:
 ```
 iwctl station list
