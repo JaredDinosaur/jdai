@@ -93,7 +93,7 @@ Spaces and special characters (other than -) are forbidden and **will** cause is
 
 Using the same password as your normal user is easier to remember.
 
-If the password is left blank, the user will be asked whether to lock the root account. This is not recommended and can be changed with `sudo chpasswd`.
+If the password is left blank, the user will be asked whether to lock the root account. This is not recommended and can be changed with `sudo passwd`.
 
 ## Boot menu
 
