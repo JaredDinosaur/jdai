@@ -319,6 +319,7 @@ intchk(){
     connect=$?
     if [[ $connect == 0 ]]; then
         echo "Connection test successful."
+        quit=0
     else
         loop=1
         while [[ $loop == 1 ]]; do
@@ -377,6 +378,7 @@ else
     echo "For a legacy-compatible script, run './jdai.sh' to use the older script."
     exit 3
 fi
+# Check internet connection
 quit=0
 intchk
 if [[ quit == 1 ]]; then
