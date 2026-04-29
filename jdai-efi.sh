@@ -311,10 +311,39 @@ bootent(){
     done
 }
 
-noint(){
-    echo
-    echo "No internet connection found. Use iwctl to connect to a wireless network."
-    exit 1
+intchk(){
+    echo "Checking internet connection..."
+    ping -c 1 -W 2 archlinux.org >/dev/null
+    connect=$?
+    if [[ $connect == 0 ]]; then
+        echo "Connection test successful."
+    else
+        loop=1
+        while [[ $loop == 1 ]]; do
+            clear
+            echo -e '\e[3m'"Internet connection not found! Would you like to connect to a wireless network?"'\e(B\e[m'
+            echo -e '\e[3m'"If you are definitely connected to the internet, the Arch Linux servers may be down."'\e(B\e[m'
+            echo
+            echo -e '\e[36m'"[Y]" '\e(B\e[m'"List available wireless networks"
+            echo -e '\e[36m'"[N]" '\e(B\e[m'"Cancel installation"
+            read -n 1 choice
+            case $choice in
+                y|Y)
+                    iwctl station wlan0 get-networks
+                    read -p "Enter the name of the network you wish to connect to: " ssid
+                    iwctl station wlan0 connect $ssid
+                    loop=0
+                    quit=2
+                    ;;
+                n|N)
+                    quit=1
+                    loop=0
+                    ;;
+                *)
+                    ;;
+            esac
+        done
+    fi
 }
 
 clear
@@ -327,16 +356,25 @@ echo "==========================================================================
 echo "                                [Y] Continue                               "
 echo "                                 [N] Cancel                                "
 read -n 1 choice
-#ping -c 1 archlinux.org || noint
 case $choice in
     y|Y)
         clear
         ;;
     *)
-        exit
+        exit 1
         ;;
 esac
-
+quit=0
+intchk
+if [[ quit == 1 ]]; then
+    exit 2
+fi
+while [[ $quit == 2 ]]; do
+    intchk
+    if [[ quit == 1 ]]; then
+        exit 2
+    fi
+done
 sed -i "s/#Color/Color/" /etc/pacman.conf
 sed -i "s/ParallelDownloads = 5/ParallelDownloads = 1/" /etc/pacman.conf
 sed -i "s/#NoProgressBar/ILoveCandy/" /etc/pacman.conf
