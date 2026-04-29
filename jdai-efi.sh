@@ -395,7 +395,7 @@ done
 sed -i "s/#Color/Color/" /etc/pacman.conf
 sed -i "s/ParallelDownloads = 5/ParallelDownloads = 1/" /etc/pacman.conf
 sed -i "s/#NoProgressBar/ILoveCandy/" /etc/pacman.conf
-pacman -Sy --noconfirm hwinfo
+pacman -Sy --noconfirm --needed hwinfo
 
 # Get options
 setlocale
@@ -536,7 +536,7 @@ echo "makepkg -si --noconfirm" >> jdai-usr.sh
 
 # Install extra packages if selected
 if [[ $extrapkgs == 1 ]]; then
-    echo "yay -S --noconfirm firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog exfatprogs f2fs-tools hfsprogs jfsutils ntfs-3g udftools apfsprogs zfs-utils" >> jdai-usr.sh
+    echo "yay -S --noconfirm --needed firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog exfatprogs f2fs-tools hfsprogs jfsutils ntfs-3g udftools apfsprogs zfs-utils" >> jdai-usr.sh
 fi
 # Install hyprland configuration files
 if [[ $profile == "Desktop (Hyprland)" ]]; then
