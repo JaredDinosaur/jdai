@@ -315,8 +315,10 @@ bootent(){
 intchk(){
     echo "Checking internet connection..."
     # Ping Arch Linux servers
+    set +e
     ping -c 1 -W 2 archlinux.org >/dev/null
     connect=$?
+    set -e
     if [[ $connect == 0 ]]; then
         echo "Connection test successful."
         quit=0
@@ -334,10 +336,9 @@ intchk(){
                 y|Y)
                     # List available wireless networks
                     iface=$(iw dev | awk '$1=="Interface"{print $2; exit}')
-                    iwctl station "$iface" connect "$ssid"
                     read -p "Enter the name of the network you wish to connect to: " ssid
                     # Connect to the selected network
-                    iwctl station wlan0 connect $ssid
+                    iwctl station "$iface" connect "$ssid"
                     loop=0
                     quit=2
                     ;;
