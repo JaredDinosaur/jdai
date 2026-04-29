@@ -337,12 +337,17 @@ intchk(){
                     clear
                     # List available wireless networks
                     iface=$(iw dev | awk '$1=="Interface"{print $2; exit}')
-                    iwctl station "$iface" get-networks
-                    read -p "Enter the name of the network you wish to connect to: " ssid
-                    # Connect to the selected network
-                    iwctl station "$iface" connect "$ssid"
-                    loop=0
-                    quit=2
+                    if [[ $iface == "" ]]; then
+                        echo "No wireless devices found!"
+                        quit=1
+                    else
+                        iwctl station "$iface" get-networks
+                        read -p "Enter the name of the network you wish to connect to: " ssid
+                        # Connect to the selected network
+                        iwctl station "$iface" connect "$ssid"
+                        quit=2
+                        loop=0
+                    fi
                     ;;
                 n|N)
                     quit=1
