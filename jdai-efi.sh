@@ -489,8 +489,10 @@ done
 
 chmod +x jdai-efi-2.sh
 chmod +x jdai-usr.sh
-echo "ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime" >> jdai-efi-2.sh
-echo "hwclock --systohc" >> jdai-efi-2.sh
+if [[ $reg == "GB" ]]; then
+    echo "ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime" >> jdai-efi-2.sh
+    echo "hwclock --systohc" >> jdai-efi-2.sh
+fi
 echo "locale-gen" >> jdai-efi-2.sh
 echo "mkinitcpio -P" >> jdai-efi-2.sh
 echo "systemctl enable ip6tables iptables iwd NetworkManager-dispatcher NetworkManager systemd-network-generator systemd-networkd wpa_supplicant" >> jdai-efi-2.sh
