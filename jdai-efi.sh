@@ -334,8 +334,10 @@ intchk(){
             read -n 1 choice
             case $choice in
                 y|Y)
+                    clear
                     # List available wireless networks
                     iface=$(iw dev | awk '$1=="Interface"{print $2; exit}')
+                    iwctl station "$iface" get-networks
                     read -p "Enter the name of the network you wish to connect to: " ssid
                     # Connect to the selected network
                     iwctl station "$iface" connect "$ssid"
