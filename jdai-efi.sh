@@ -373,7 +373,7 @@ esac
 if [[ -d "/sys/firmware/efi" ]]; then
     echo "The system is booted in UEFI mode."
 else
-    echo "The system is not booted in UEFI mode!"
+    echo "The system is not booted in UEFI mode! Check that UEFI booting is enabled and prioritised."
     echo "This script does not currently support legacy/BIOS systems."
     echo "For a legacy-compatible script, run './jdai.sh' to use the older script."
     exit 3
