@@ -381,12 +381,12 @@ fi
 # Check internet connection
 quit=0
 intchk
-if [[ quit == 1 ]]; then
+if [[ $quit == 1 ]]; then
     exit 2
 fi
 while [[ $quit == 2 ]]; do
     intchk
-    if [[ quit == 1 ]]; then
+    if [[ $quit == 1 ]]; then
         exit 2
     fi
 done
