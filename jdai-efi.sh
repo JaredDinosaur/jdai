@@ -364,6 +364,14 @@ case $choice in
         exit 1
         ;;
 esac
+if [[ -d "/sys/firmware/efi" ]]; then
+    echo "The system is booted in UEFI mode."
+else
+    echo "The system is not booted in UEFI mode!"
+    echo "This script does not currently support legacy/BIOS systems."
+    echo "For a legacy-compatible script, run './jdai.sh' to use the older script."
+    exit 3
+fi
 quit=0
 intchk
 if [[ quit == 1 ]]; then
