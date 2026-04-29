@@ -340,6 +340,7 @@ intchk(){
                     if [[ $iface == "" ]]; then
                         echo "No wireless devices found!"
                         quit=1
+                        loop=0
                     else
                         iwctl station "$iface" get-networks
                         read -p "Enter the name of the network you wish to connect to: " ssid
