@@ -501,6 +501,8 @@ while [[ $menu == 1 ]]; do
 done
 
 # Make child scripts executable
+echo "#!/bin/bash" > jdai-efi-2.sh
+echo "#!/bin/bash" > jdai-usr.sh
 chmod +x jdai-efi-2.sh
 chmod +x jdai-usr.sh
 
