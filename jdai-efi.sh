@@ -32,6 +32,7 @@ diskpart(){
         clear
         echo "Available disks:"
         echo
+        # List available disks
         hwinfo --disk --short
         echo
         echo "Recommended minimum disk space: 64GB for VMs, 128GB for real hardware"
@@ -313,6 +314,7 @@ bootent(){
 
 intchk(){
     echo "Checking internet connection..."
+    # Ping Arch Linux servers
     ping -c 1 -W 2 archlinux.org >/dev/null
     connect=$?
     if [[ $connect == 0 ]]; then
@@ -329,8 +331,10 @@ intchk(){
             read -n 1 choice
             case $choice in
                 y|Y)
+                    # List available wireless networks
                     iwctl station wlan0 get-networks
                     read -p "Enter the name of the network you wish to connect to: " ssid
+                    # Connect to the selected network
                     iwctl station wlan0 connect $ssid
                     loop=0
                     quit=2
@@ -364,6 +368,7 @@ case $choice in
         exit 1
         ;;
 esac
+# Check boot mode
 if [[ -d "/sys/firmware/efi" ]]; then
     echo "The system is booted in UEFI mode."
 else
@@ -383,10 +388,13 @@ while [[ $quit == 2 ]]; do
         exit 2
     fi
 done
+# Edit pacman config and install hwinfo
 sed -i "s/#Color/Color/" /etc/pacman.conf
 sed -i "s/ParallelDownloads = 5/ParallelDownloads = 1/" /etc/pacman.conf
 sed -i "s/#NoProgressBar/ILoveCandy/" /etc/pacman.conf
 pacman -Sy --noconfirm hwinfo
+
+# Get options
 setlocale
 diskpart
 pkgs
@@ -394,6 +402,7 @@ sethostname
 user
 bootent
 
+# Show options and ask for confirmation
 menu=1
 while [[ $menu == 1 ]]; do
     clear
@@ -487,32 +496,46 @@ while [[ $menu == 1 ]]; do
     esac
 done
 
+# Make child scripts executable
 chmod +x jdai-efi-2.sh
 chmod +x jdai-usr.sh
+
+# Set timezone (GB only)
 if [[ $reg == "GB" ]]; then
     echo "ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime" >> jdai-efi-2.sh
     echo "hwclock --systohc" >> jdai-efi-2.sh
 fi
+# Generate locale
 echo "locale-gen" >> jdai-efi-2.sh
+# Generate initramfs
 echo "mkinitcpio -P" >> jdai-efi-2.sh
+# Enable system services
 echo "systemctl enable ip6tables iptables iwd NetworkManager-dispatcher NetworkManager systemd-network-generator systemd-networkd wpa_supplicant" >> jdai-efi-2.sh
 echo "systemctl enable accounts-daemon" >> jdai-efi-2.sh
 echo "systemctl enable udisks2" >> jdai-efi-2.sh
 echo "systemctl enable upower" >> jdai-efi-2.sh
 echo "systemctl enable sddm" >> jdai-efi-2.sh
 echo "systemctl enable lightdm" >> jdai-efi-2.sh
+# Create boot entry
 echo "efibootmgr --create --disk /dev/${disk} --part 1 --label \"Arch Linux\" --loader '\\EFI\\arch-limine\\BOOTX64.EFI' --unicode" >> jdai-efi-2.sh
+# Copy child scripts
 echo "cp jdai-usr.sh /home/$uname" >> jdai-efi-2.sh
+# Switch to newly created user
 echo "cd /home/$uname" >> jdai-efi-2.sh
+# Run child script as new user
 echo "su $uname -c ./jdai-usr.sh" >> jdai-efi-2.sh
 
+# Clone and build yay
 echo "git clone https://aur.archlinux.org/yay.git" >> jdai-usr.sh
 echo "cd yay" >> jdai-usr.sh
 echo "makepkg -si --noconfirm" >> jdai-usr.sh
 #echo "yay -S --noconfirm limine-entry-tool" >> jdai-usr.sh
+
+# Install extra packages if selected
 if [[ $extrapkgs == 1 ]]; then
     echo "yay -S --noconfirm firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog exfatprogs f2fs-tools hfsprogs jfsutils ntfs-3g udftools apfsprogs zfs-utils" >> jdai-usr.sh
 fi
+# Install hyprland configuration files
 if [[ $profile == "Desktop (Hyprland)" ]]; then
     echo "cd .." >> jdai-usr.sh
     echo "git clone https://github.com/JaredDinosaur/hyprconf" >> jdai-usr.sh
@@ -524,6 +547,8 @@ if [[ $profile == "Desktop (Hyprland)" ]]; then
     echo "sudo cp config.jsonc /etc/xdg/waybar" >> jdai-usr.sh
     echo "sudo cp style.css /etc/xdg/waybar" >> jdai-usr.sh
 fi
+
+## Scan for other boot entries
 #if [[ $bootmenu == 1 ]]; then
 #    echo "echo" >> jdai-usr.sh
 #    echo "echo" >> jdai-usr.sh
@@ -549,7 +574,12 @@ case $manpart in
         echo "Starting installation in 1 second..."
         sleep 1
         clear
+        # Get system RAM amount
         ram=$(grep MemTotal /proc/meminfo | awk '{print int($2/1024)}')
+        # Partition disk:
+        # /boot  | 1GB
+        # [SWAP] | Same as RAM
+        # /      | rest of disk
         fdisk /dev/$disk <<EOF
 g
 n
@@ -581,6 +611,7 @@ EOF
         echo 
         echo "Press any key to open cfdisk."
         read -n 1
+        # Open TUI partition manager
         cfdisk
         clear
         read -p "Which partition number should be used for root? " rootno
@@ -628,6 +659,7 @@ EOF
         clear
         ;;
 esac
+# Handles different partition names (sda/vda vs nvme/mmcblk)
 if [[ "$disk" == *"d"* ]]; then
     root="${disk}${rootno}"
     boot="${disk}${bootno}"
@@ -639,37 +671,51 @@ else
 fi
 case $crypt in
     0)
+        # Format root partition (no encryption)
         if [[ $rootfs == "ext4" ]]; then
             mkfs.$rootfs /dev/$root
         else
             mkfs.$rootfs -f /dev/$root
         fi
+        # Mount root partition to /mnt
         mount /dev/$root /mnt
         ;;
     1)
+        # Format and encrypt root partition
         printf "%s" "$cryptpass" | cryptsetup -v --batch-mode luksFormat /dev/$root -
         printf "%s" "$cryptpass" | cryptsetup open /dev/$root root -
         mkfs.$rootfs /dev/mapper/root
+        # Mount root partition to /mnt
         mount /dev/mapper/root /mnt
         ;;
 esac
 if [[ $formboot == 1 ]]; then
+    # Format ESP
     mkfs.fat -F32 /dev/$boot
 fi
+# Mount ESP to /mnt/boot
 mount --mkdir /dev/$boot /mnt/boot
+# Format and activate swap partition
 mkswap /dev/$swap
 swapon /dev/$swap
+# Install packages
 pacstrap -K /mnt $pkglist
+# Configure filesystem mount points
 genfstab -U /mnt >> /mnt/etc/fstab
+# Set language and keyboard layout
 echo "en_${reg}.UTF-8 UTF-8" > /mnt/etc/locale.gen
 echo "LANG=en_${reg}.UTF-8" > /mnt/etc/locale.conf
 if [[ $reg == "GB" ]]; then
     echo "KEYMAP=uk" > /mnt/etc/vconsole.conf
 fi
+# Set hostname
 echo $hname > /mnt/etc/hostname
+# Create EFI boot point
 mkdir -p /mnt/boot/EFI/arch-limine
 cp /mnt/usr/share/limine/BOOTX64.EFI /mnt/boot/EFI/arch-limine
+# Get root partition UUID
 uuid=$(blkid -s UUID -o value /dev/$root)
+# Enable initramfs hooks
 case $crypt in
     0)
         sed -i 's/^HOOKS=.*/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block filesystems fsck)/' /mnt/etc/mkinitcpio.conf
@@ -678,6 +724,7 @@ case $crypt in
         sed -i 's/^HOOKS=.*/HOOKS=(base udev autodetect keyboard keymap consolefont modconf block encrypt sd-encrypt filesystems fsck)/' /mnt/etc/mkinitcpio.conf
         ;;
 esac
+# Configure bootloader
 touch /mnt/boot/EFI/arch-limine/limine.conf
 case $bootmenu in
     0)
@@ -699,21 +746,29 @@ case $crypt in
         echo "    cmdline: cryptdevice=UUID=${uuid}:root root=/dev/mapper/root rw rootfstype=${rootfs} quiet splash" >> /mnt/boot/EFI/arch-limine/limine.conf
 esac
 echo "    module_path: boot():/initramfs-linux.img" >> /mnt/boot/EFI/arch-limine/limine.conf
+# Edit pacman configuration
 sed -i "s/#Color/Color/" /mnt/etc/pacman.conf
 sed -i "s/ParallelDownloads = 5/ParallelDownloads = 1/" /mnt/etc/pacman.conf
 sed -i "s/#NoProgressBar/ILoveCandy/" /mnt/etc/pacman.conf
 sed -i "s/#[multilib]/[multilib]/" /mnt/etc/pacman.conf
+# Edit sudo configuration
 sed -i 's/^# \(%wheel ALL=(ALL:ALL) NOPASSWD: ALL\)/\1/' /mnt/etc/sudoers
 
 cp ./* /mnt
 if [[ $rootpass == "" ]]; then
+    # Disable root account
     arch-chroot /mnt passwd -l root
 else
+    # Set root password
     arch-chroot /mnt chpasswd <<< "root:$rootpass"
 fi
+# Add user
 arch-chroot /mnt useradd -m -G wheel $uname
+# Set password
 arch-chroot /mnt chpasswd <<< "$uname:$pass"
+# Run child script within chroot
 arch-chroot /mnt bash ./jdai-efi-2.sh
+# Edit sudo configuration
 sed -i 's/^\(%wheel ALL=(ALL:ALL) NOPASSWD: ALL\)/# \1/' /mnt/etc/sudoers
 sed -i 's/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/' /mnt/etc/sudoers
 echo
