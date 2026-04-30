@@ -508,6 +508,7 @@ while [[ $menu == 1 ]]; do
         1)
             echo "Gaming features: Enabled"
             ;;
+    esac
     echo "Hostname: $hname"
     if [[ $rootpass == "" ]]; then
         echo "Root account: Disabled"
