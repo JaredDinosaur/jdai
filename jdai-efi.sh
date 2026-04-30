@@ -598,6 +598,7 @@ echo "systemctl enable udisks2" >> jdai-efi-2.sh
 echo "systemctl enable upower" >> jdai-efi-2.sh
 echo "systemctl enable sddm" >> jdai-efi-2.sh
 echo "systemctl enable lightdm" >> jdai-efi-2.sh
+echo "systemctl enable wireplumber" >> jdai-efi-2.sh
 # Create boot entry
 echo "efibootmgr --create --disk /dev/${disk} --part 1 --label \"Arch Linux\" --loader '\\BOOTX64.EFI' --unicode" >> jdai-efi-2.sh
 # Copy child scripts
