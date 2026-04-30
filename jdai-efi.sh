@@ -692,7 +692,7 @@ EOF
         echo "Press any key to open cfdisk."
         read -n 1
         # Open TUI partition manager
-        cfdisk
+        cfdisk /dev/$disk
         clear
         read -p "Which partition number should be used for root? " rootno
         clear
