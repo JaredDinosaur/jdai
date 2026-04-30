@@ -247,18 +247,22 @@ pkgs(){
                     case $choice in
                         1)
                             gpupkg=" vulkan-intel xf86-video-intel"
+                            gpuconf="Intel"
                             loop=0
                             ;;
                         2)
                             gpupkg=" vulkan-radeon xf86-video-amdgpu"
+                            gpuconf="AMD (Radeon)"
                             loop=0
                             ;;
                         3)
                             gpupkg=" vulkan-nouveau xf86-video-nouveau"
+                            gpuconf="Nvidia"
                             loop=0
                             ;;
                         4)
                             gpupkg=""
+                            gpuconf="Other"
                             loop=0
                             ;;
                         *)
@@ -507,6 +511,7 @@ while [[ $menu == 1 ]]; do
             ;;
         1)
             echo "Gaming features: Enabled"
+            echo "GPU Driver: $gpuconf"
             ;;
     esac
     echo "Hostname: $hname"
