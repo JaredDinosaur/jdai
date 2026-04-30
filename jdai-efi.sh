@@ -602,6 +602,7 @@ echo "cd /home/$uname" >> jdai-efi-2.sh
 echo "su $uname -c ./jdai-usr.sh" >> jdai-efi-2.sh
 
 # Clone and build yay
+echo "sudo pacman -Syy" >> jdai-usr.sh
 echo "git clone https://aur.archlinux.org/yay.git" >> jdai-usr.sh
 echo "cd yay" >> jdai-usr.sh
 echo "makepkg -si --noconfirm" >> jdai-usr.sh
