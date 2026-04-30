@@ -830,7 +830,7 @@ echo "    module_path: boot():/initramfs-linux.img" >> /mnt/boot/EFI/arch-limine
 sed -i "s/#Color/Color/" /mnt/etc/pacman.conf
 sed -i "s/ParallelDownloads = 5/ParallelDownloads = 1/" /mnt/etc/pacman.conf
 sed -i "s/#NoProgressBar/ILoveCandy/" /mnt/etc/pacman.conf
-sed -z -i "s/#[multilib]\n#Include = \/etc\/pacman.d\/mirrorlist/[multilib]\nInclude = \/etc\/pacman.d\/mirrorlist/" /mnt/etc/pacman.conf
+sed -i '/\[multilib\]/,/Include/ s/^#//' /mnt/etc/pacman.conf
 # Edit sudo configuration
 sed -i 's/^# \(%wheel ALL=(ALL:ALL) NOPASSWD: ALL\)/\1/' /mnt/etc/sudoers
 
