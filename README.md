@@ -122,7 +122,7 @@ If the password is left blank, the user will be asked whether to lock the root a
 
 ## Boot menu
 
-Automatic entry detection (such as Windows) is currently broken and therefore disabled. It can be done after installation by running `yay -S --noconfirm limine-entry-tool` and `sudo limine-scan`.
+Automatic entry detection (such as Windows) is currently broken and therefore disabled. It can be done after installation by running `yay -S --noconfirm limine-entry-tool`, `sudo limine-scan` and `sudo cp /boot/limine.conf /boot/EFI/arch-limine`.
 
 If the boot menu is shown, it will automatically boot into Arch after 10 seconds if there is no input from the user.
 
