@@ -51,7 +51,7 @@ diskpart(){
                 loop=0
                 ;;
             q|Q)
-                exit
+                exit 1
                 ;;
             *)
                 ;;
