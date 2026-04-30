@@ -598,7 +598,7 @@ echo "systemctl enable upower" >> jdai-efi-2.sh
 echo "systemctl enable sddm" >> jdai-efi-2.sh
 echo "systemctl enable lightdm" >> jdai-efi-2.sh
 # Create boot entry
-echo "efibootmgr --create --disk /dev/${disk} --part 1 --label \"Arch Linux\" --loader '\\EFI\\arch-limine\\BOOTX64.EFI' --unicode" >> jdai-efi-2.sh
+echo "efibootmgr --create --disk /dev/${disk} --part 1 --label \"Arch Linux\" --loader '\\BOOTX64.EFI' --unicode" >> jdai-efi-2.sh
 # Copy child scripts
 echo "cp jdai-usr.sh /home/$uname" >> jdai-efi-2.sh
 # Switch to newly created user
@@ -796,8 +796,7 @@ fi
 # Set hostname
 echo $hname > /mnt/etc/hostname
 # Create EFI boot point
-mkdir -p /mnt/boot/EFI/arch-limine
-cp /mnt/usr/share/limine/BOOTX64.EFI /mnt/boot/EFI/arch-limine
+cp /mnt/usr/share/limine/BOOTX64.EFI /mnt/boot/
 # Get root partition UUID
 uuid=$(blkid -s UUID -o value /dev/$root)
 # Enable initramfs hooks
@@ -810,28 +809,28 @@ case $crypt in
         ;;
 esac
 # Configure bootloader
-touch /mnt/boot/EFI/arch-limine/limine.conf
+touch /mnt/boot/limine.conf
 case $bootmenu in
     0)
-        echo "timeout: 0" >> /mnt/boot/EFI/arch-limine/limine.conf
+        echo "timeout: 0" >> /mnt/boot/limine.conf
         ;;
     1)
-        echo "timeout: 10" >> /mnt/boot/EFI/arch-limine/limine.conf
+        echo "timeout: 10" >> /mnt/boot/limine.conf
         ;;
 esac
-echo "" >> /mnt/boot/EFI/arch-limine/limine.conf
-echo "/Arch Linux" >> /mnt/boot/EFI/arch-limine/limine.conf
-echo "    protocol: linux" >> /mnt/boot/EFI/arch-limine/limine.conf
-echo "    path: boot():/vmlinuz-linux" >> /mnt/boot/EFI/arch-limine/limine.conf
+echo "" >> /mnt/boot/limine.conf
+echo "/Arch Linux" >> /mnt/boot/limine.conf
+echo "    protocol: linux" >> /mnt/boot/limine.conf
+echo "    path: boot():/vmlinuz-linux" >> /mnt/boot/limine.conf
 case $crypt in
     0)
-        echo "    cmdline: root=UUID=${uuid} zswap.enabled=0 rw rootfstype=${rootfs} quiet splash" >> /mnt/boot/EFI/arch-limine/limine.conf
+        echo "    cmdline: root=UUID=${uuid} zswap.enabled=0 rw rootfstype=${rootfs} quiet splash" >> /mnt/boot/limine.conf
         ;;
     1)
-        echo "    cmdline: cryptdevice=UUID=${uuid}:root root=/dev/mapper/root rw rootfstype=${rootfs} quiet splash" >> /mnt/boot/EFI/arch-limine/limine.conf
+        echo "    cmdline: cryptdevice=UUID=${uuid}:root root=/dev/mapper/root rw rootfstype=${rootfs} quiet splash" >> /mnt/boot/limine.conf
         ;;
 esac
-echo "    module_path: boot():/initramfs-linux.img" >> /mnt/boot/EFI/arch-limine/limine.conf
+echo "    module_path: boot():/initramfs-linux.img" >> /mnt/boot/limine.conf
 # Edit pacman configuration
 sed -i "s/#Color/Color/" /mnt/etc/pacman.conf
 sed -i "s/ParallelDownloads = 5/ParallelDownloads = 1/" /mnt/etc/pacman.conf
