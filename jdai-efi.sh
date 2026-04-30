@@ -832,6 +832,8 @@ case $crypt in
         ;;
 esac
 echo "    module_path: boot():/initramfs-linux.img" >> /mnt/boot/limine.conf
+touch /mnt/etc/default/limine
+echo "ESP_PATH=/boot" >> /mnt/etc/default/limine
 # Edit pacman configuration
 sed -i "s/#Color/Color/" /mnt/etc/pacman.conf
 sed -i "s/ParallelDownloads = 5/ParallelDownloads = 1/" /mnt/etc/pacman.conf
