@@ -386,6 +386,7 @@ else
     echo "The system is not booted in UEFI mode! Check that UEFI booting is enabled and prioritised."
     echo "This script does not currently support legacy/BIOS systems."
     echo "For a legacy-compatible script, run './jdai.sh' to use the older script."
+    chmod +x jdai.sh
     exit 3
 fi
 # Check internet connection
