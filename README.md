@@ -102,6 +102,10 @@ Includes packages such as extra terminal utilities, Firefox with uBlock Origin (
 
 These packages may fail to install if the profile is set to Minimal, although having additional packages with the Minimal configuration already isn't a good idea.
 
+## Gaming packages
+
+Includes Steam, Lutris, and compatibility tools to help your games run better on Arch. Choose these if you plan on playing games.
+
 ## Hostname and username
 
 The simpler the better, up to 63 characters. Try to keep it to lowercase letters, as numbers or dashes can cause issues at the start or end of a name.
