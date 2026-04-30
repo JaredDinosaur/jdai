@@ -223,6 +223,59 @@ pkgs(){
                 ;;
         esac
     done
+    loop=1
+    while [[ $loop == 1 ]]; do
+        clear
+        echo -e '\e[3m'"Install Steam and additional gaming features?"'\e(B\e[m'
+        echo
+        echo -e '\e[36m'"[Y]" '\e(B\e[m'"Yes"
+        echo -e '\e[36m'"[N]" '\e(B\e[m'"No"
+        read -n 1 choice
+        case $choice in
+            y|Y)
+                loop=1
+                while [[ $loop == 1 ]]; do
+                    clear
+                    echo -e '\e[3m'"Select your graphics card manufacturer."'\e(B\e[m'
+                    echo -e '\e[3m'"If your machine has no graphics card, select your CPU manufacturer."'\e(B\e[m'
+                    echo
+                    echo -e '\e[36m'"[1]" '\e(B\e[m'"Intel"
+                    echo -e '\e[36m'"[2]" '\e(B\e[m'"AMD (Radeon)"
+                    echo -e '\e[36m'"[3]" '\e(B\e[m'"Nvidia"
+                    echo -e '\e[36m'"[4]" '\e(B\e[m'"Other"
+                    read -n 1 choice
+                    case $choice in
+                        1)
+                            gpupkg=" vulkan-intel xf86-video-intel"
+                            loop=0
+                            ;;
+                        2)
+                            gpupkg=" vulkan-radeon xf86-video-amdgpu"
+                            loop=0
+                            ;;
+                        3)
+                            gpupkg=" vulkan-nouveau xf86-video-nouveau"
+                            loop=0
+                            ;;
+                        4)
+                            gpupkg=""
+                            loop=0
+                            ;;
+                        *)
+                            ;;
+                    esac
+                done
+                gamer=1
+                loop=0
+                ;;
+            n|N)
+                gamer=0
+                loop=0
+                ;;
+            *)
+                ;;
+        esac
+    done
 }
 
 sethostname(){
@@ -448,6 +501,13 @@ while [[ $menu == 1 ]]; do
             echo "Additional packages: Enabled"
             ;;
     esac
+    case $gamer in
+        0)
+            echo "Gaming features: Disabled"
+            ;;
+        1)
+            echo "Gaming features: Enabled"
+            ;;
     echo "Hostname: $hname"
     if [[ $rootpass == "" ]]; then
         echo "Root account: Disabled"
@@ -549,6 +609,9 @@ echo "makepkg -si --noconfirm" >> jdai-usr.sh
 # Install extra packages if selected
 if [[ $extrapkgs == 1 ]]; then
     echo "yay -S --noconfirm --needed firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager plymouth vlc packagekit base-devel ark waybar hyprpaper thunar wofi konsole dialog exfatprogs f2fs-tools hfsprogs jfsutils ntfs-3g udftools apfsprogs zfs-utils" >> jdai-usr.sh
+fi
+if [[ $gamer == 1 ]]; then
+    echo "yay -S --noconfirm --needed steam gamescope lutris winboat mesa$gpupkg" >> jdai-usr.sh
 fi
 # Install hyprland configuration files
 if [[ $profile == "Desktop (Hyprland)" ]]; then
@@ -759,13 +822,14 @@ case $crypt in
         ;;
     1)
         echo "    cmdline: cryptdevice=UUID=${uuid}:root root=/dev/mapper/root rw rootfstype=${rootfs} quiet splash" >> /mnt/boot/EFI/arch-limine/limine.conf
+        ;;
 esac
 echo "    module_path: boot():/initramfs-linux.img" >> /mnt/boot/EFI/arch-limine/limine.conf
 # Edit pacman configuration
 sed -i "s/#Color/Color/" /mnt/etc/pacman.conf
 sed -i "s/ParallelDownloads = 5/ParallelDownloads = 1/" /mnt/etc/pacman.conf
 sed -i "s/#NoProgressBar/ILoveCandy/" /mnt/etc/pacman.conf
-sed -i "s/#[multilib]/[multilib]/" /mnt/etc/pacman.conf
+sed -z -i "s/#[multilib]\n#Include = \/etc\/pacman.d\/mirrorlist/[multilib]\nInclude = \/etc\/pacman.d\/mirrorlist/" /mnt/etc/pacman.conf
 # Edit sudo configuration
 sed -i 's/^# \(%wheel ALL=(ALL:ALL) NOPASSWD: ALL\)/\1/' /mnt/etc/sudoers
 
