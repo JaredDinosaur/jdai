@@ -580,6 +580,7 @@ echo "#!/bin/bash" > jdai-efi-2.sh
 echo "#!/bin/bash" > jdai-usr.sh
 chmod +x jdai-efi-2.sh
 chmod +x jdai-usr.sh
+chmod +x cleanup.sh
 
 # Set timezone (GB only)
 if [[ $reg == "GB" ]]; then
