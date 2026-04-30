@@ -266,6 +266,7 @@ echo "cp jdai-profile.sh /home/oem" >> jdai-efi-2.sh
 echo "cd /home/oem" >> jdai-efi-2.sh
 echo "su oem -c ./jdai-usr.sh" >> jdai-efi-2.sh
 
+echo "sudo pacman -Syy" >> jdai-usr.sh
 echo "git clone https://aur.archlinux.org/yay.git" >> jdai-usr.sh
 echo "cd yay" >> jdai-usr.sh
 echo "makepkg -si --noconfirm" >> jdai-usr.sh
