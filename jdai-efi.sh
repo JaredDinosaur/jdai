@@ -36,7 +36,7 @@ diskpart(){
         hwinfo --disk --short
         echo
         echo "Recommended minimum disk space: 64GB for VMs, 128GB for real hardware"
-        read -p "The disk to install to is /dev/" disk
+        read -p "The disk to install to is /dev/___: " disk
         echo
         echo -e '\e[3m'"WARNING: The contents of this disk will be changed or erased!"'\e(B\e[m'
         echo -e '\e[3m'"Double check that you have selected the correct disk!"'\e(B\e[m'
