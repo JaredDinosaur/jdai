@@ -550,7 +550,7 @@ while [[ $menu == 1 ]]; do
             menu=0
             ;;
         n|N)
-            exit
+            exit 1
             ;;
         1)
             setlocale
@@ -661,6 +661,16 @@ case $manpart in
         echo "Starting installation in 1 second..."
         sleep 1
         clear
+        # Handles different partition names (sda/vda vs nvme/mmcblk)
+        if [[ "$disk" == *"d"* ]]; then
+            root="${disk}${rootno}"
+            boot="${disk}${bootno}"
+            swap="${disk}${swapno}"
+        else
+            root="${disk}p${rootno}"
+            boot="${disk}p${bootno}"
+            swap="${disk}p${swapno}"
+        fi
         # Get system RAM amount
         ram=$(grep MemTotal /proc/meminfo | awk '{print int($2/1024)}')
         # Partition disk:
@@ -687,46 +697,95 @@ w
 EOF
         ;;
     1)
-        echo
-        echo "The following partitions are required:"
-        echo
-        echo " Type | Size"
-        echo "------|----------------------------"
-        echo " Boot | 256MB to 1GB"
-        echo " Swap | Same as RAM"
-        echo " Root | 8GB min, 32GB+ recommended"
-        echo 
-        echo "Press any key to open cfdisk."
-        read -n 1
-        # Open TUI partition manager
-        cfdisk /dev/$disk
-        clear
-        read -p "Which partition number should be used for root? " rootno
-        clear
-        read -p "Which partition number should be used for boot? (usually 1) " bootno
-        clear
-        read -p "Which partition number should be used for swap? " swapno
-        clear
-        loop=1
-        while [[ $loop == 1 ]]; do
-            clear
-            echo -e '\e[3m'"Format the boot partition? This will remove all data on the partition!"'\e(B\e[m'
+        menu=1
+        while [[ $menu == 1 ]]; do
             echo
-            echo -e '\e[36m'"[Y]" '\e(B\e[m'"Yes, format it"
-            echo -e '\e[36m'"[N]" '\e(B\e[m'"No, keep existing data (may cause issues)"
-            read -n 1 choice
-            case $choice in
-                y|Y)
-                    formboot=1
-                    loop=0
-                    ;;
-                n|N)
-                    formboot=0
-                    loop=0
-                    ;;
-                *)
-                    ;;
-            esac
+            echo "The following partitions are required:"
+            echo
+            echo " Type | Size"
+            echo "------|----------------------------"
+            echo " Boot | 256MB to 1GB"
+            echo " Swap | Same as RAM"
+            echo " Root | 8GB min, 32GB+ recommended"
+            echo 
+            echo "Press any key to open cfdisk."
+            read -n 1
+            # Open TUI partition manager
+            cfdisk /dev/$disk
+            clear
+            read -p "Which partition number should be used for root? " rootno
+            clear
+            read -p "Which partition number should be used for boot? (usually 1) " bootno
+            clear
+            read -p "Which partition number should be used for swap? " swapno
+            clear
+            loop=1
+            while [[ $loop == 1 ]]; do
+                clear
+                echo -e '\e[3m'"Format the boot partition? This will remove all data on the partition!"'\e(B\e[m'
+                echo
+                echo -e '\e[36m'"[Y]" '\e(B\e[m'"Yes, format it"
+                echo -e '\e[36m'"[N]" '\e(B\e[m'"No, keep existing data (may cause issues)"
+                read -n 1 choice
+                case $choice in
+                    y|Y)
+                        formboot=1
+                        loop=0
+                        ;;
+                    n|N)
+                        formboot=0
+                        loop=0
+                        ;;
+                    *)
+                        ;;
+                esac
+            done
+            # Handles different partition names (sda/vda vs nvme/mmcblk)
+            if [[ "$disk" == *"d"* ]]; then
+                root="${disk}${rootno}"
+                boot="${disk}${bootno}"
+                swap="${disk}${swapno}"
+            else
+                root="${disk}p${rootno}"
+                boot="${disk}p${bootno}"
+                swap="${disk}p${swapno}"
+            fi
+            loop=1
+            while [[ $loop == 1 ]]; do
+                clear
+                echo "Root partition: /dev/$root"
+                echo "Boot partition: /dev/$boot"
+                echo "Swap partition: /dev/$swap"
+                case $formboot in
+                    0)
+                        echo "Format boot partition: No"
+                        ;;
+                    1)
+                        echo "Format boot partition: Yes"
+                        ;;
+                esac
+                echo
+                echo -e '\e[3m'"Are you sure these options are correct?"'\e(B\e[m'
+                echo
+                echo -e '\e[36m'"[Y]" '\e(B\e[m'"Yes, continue"
+                echo -e '\e[36m'"[N]" '\e(B\e[m'"No, change my options"
+                echo -e '\e[36m'"[Q]" '\e(B\e[m'"Cancel installation"
+                read -n 1 choice
+                case $choice in
+                    y|Y)
+                        menu=0
+                        loop=0
+                        ;;
+                    n|N)
+                        loop=0
+                        ;;
+                    q|Q)
+                        exit 1
+                        ;;
+                    *)
+                        ;;
+                esac
+            done
         done
         clear
         echo "Starting installation in 5 seconds..."
@@ -746,16 +805,7 @@ EOF
         clear
         ;;
 esac
-# Handles different partition names (sda/vda vs nvme/mmcblk)
-if [[ "$disk" == *"d"* ]]; then
-    root="${disk}${rootno}"
-    boot="${disk}${bootno}"
-    swap="${disk}${swapno}"
-else
-    root="${disk}p${rootno}"
-    boot="${disk}p${bootno}"
-    swap="${disk}p${swapno}"
-fi
+
 case $crypt in
     0)
         # Format root partition (no encryption)
