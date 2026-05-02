@@ -476,59 +476,59 @@ bootent
 menu=1
 while [[ $menu == 1 ]]; do
     clear
-    echo "Region: $reg"
-    echo "Disk: $disk"
+    echo "Region:                 $reg"
+    echo "Disk:                   $disk"
     case $manpart in
         0)
-            echo "Partitioning: Automatic (using entire disk)"
+            echo "Partitioning:           Automatic (using entire disk)"
             ;;
         1)
-            echo "Partitioning: Manual"
+            echo "Partitioning:           Manual"
             ;;
     esac
-    echo "Filesystem: $rootfs"
+    echo "Filesystem:             $rootfs"
     case $crypt in
         0)
-            echo "Disk encryption: Disabled"
+            echo "Disk encryption:        Disabled"
             ;;
         1)
-            echo "Disk encryption: Enabled"
-            echo "Encryption password: $cryptstar"
+            echo "Disk encryption:        Enabled"
+            echo "Encryption password:    $cryptstar"
             ;;
     esac
-    echo "Profile: $profile"
+    echo "Profile:                $profile"
     case $extrapkgs in
         0)
-            echo "Additional packages: Disabled"
+            echo "Additional packages:    Disabled"
             ;;
         1)
-            echo "Additional packages: Enabled"
+            echo "Additional packages:    Enabled"
             ;;
     esac
     case $gamer in
         0)
-            echo "Gaming features: Disabled"
-            echo "GPU Driver: None"
+            echo "Gaming features:        Disabled"
+            echo "GPU Driver:             None"
             ;;
         1)
-            echo "Gaming features: Enabled"
-            echo "GPU Driver: $gpuconf"
+            echo "Gaming features:        Enabled"
+            echo "GPU Driver:             $gpuconf"
             ;;
     esac
-    echo "Hostname: $hname"
+    echo "Hostname:               $hname"
     if [[ $rootpass == "" ]]; then
-        echo "Root account: Disabled"
+        echo "Root account:               Disabled"
     else
-        echo "Root password: $rootstar"
+        echo "Root password:              $rootstar"
     fi
-    echo "Username: $uname"
-    echo "Password: $star"
+    echo "Username:               $uname"
+    echo "Password:               $star"
     case $bootmenu in
         0)
-            echo "Boot menu: Hidden"
+            echo "Boot menu:              Hidden"
             ;;
         1)
-            echo "Boot menu: Shown"
+            echo "Boot menu:              Shown"
             ;;
     esac
     echo
