@@ -539,8 +539,8 @@ while [[ $menu == 1 ]]; do
     echo -e '\e[36m'"[N]" '\e(B\e[m'"Cancel installation"
     echo
     echo -e '\e[36m'"[1]" '\e(B\e[m'"Change locale"
-    echo -e '\e[36m'"[2]" '\e(B\e[m'"Change partitioning"
-    echo -e '\e[36m'"[3]" '\e(B\e[m'"Change packages"
+    echo -e '\e[36m'"[2]" '\e(B\e[m'"Change partitioning and encryption"
+    echo -e '\e[36m'"[3]" '\e(B\e[m'"Change packages and drivers"
     echo -e '\e[36m'"[4]" '\e(B\e[m'"Change hostname"
     echo -e '\e[36m'"[5]" '\e(B\e[m'"Change username and authentication"
     echo -e '\e[36m'"[6]" '\e(B\e[m'"Change boot menu"
