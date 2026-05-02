@@ -480,7 +480,7 @@ while [[ $menu == 1 ]]; do
     echo "Disk: $disk"
     case $manpart in
         0)
-            echo "Partitioning: Automatic"
+            echo "Partitioning: Automatic (using entire disk)"
             ;;
         1)
             echo "Partitioning: Manual"
@@ -489,10 +489,10 @@ while [[ $menu == 1 ]]; do
     echo "Filesystem: $rootfs"
     case $crypt in
         0)
-            echo "Encryption: Disabled"
+            echo "Disk encryption: Disabled"
             ;;
         1)
-            echo "Encryption: Enabled"
+            echo "Disk encryption: Enabled"
             echo "Encryption password: $cryptstar"
             ;;
     esac
@@ -508,6 +508,7 @@ while [[ $menu == 1 ]]; do
     case $gamer in
         0)
             echo "Gaming features: Disabled"
+            echo "GPU Driver: None"
             ;;
         1)
             echo "Gaming features: Enabled"
