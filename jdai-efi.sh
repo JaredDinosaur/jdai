@@ -519,7 +519,7 @@ while [[ $menu == 1 ]]; do
     if [[ $rootpass == "" ]]; then
         echo "Root account:               Disabled"
     else
-        echo "Root password:              $rootstar"
+        echo "Root password:          $rootstar"
     fi
     echo "Username:               $uname"
     echo "Password:               $star"
