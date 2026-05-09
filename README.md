@@ -2,8 +2,6 @@
 
 **jdai-efi.sh:** The main script. It is strongly recommended to use this one.
 
-**jdai.sh:** Older, less polished script for legacy systems.
-
 **jdai-efi-oem.sh:** Allows installation for another user, partially completing the install and running a setup script on startup. Currently a work in progress, may be unstable with some configurations.
 
 **jdai-profile.sh:** Post-setup script run on startup, used by jdai-efi-oem.sh
@@ -13,6 +11,8 @@
 **jdai-usr.sh:** Tertiary script created and run by jdai-efi.sh - performs tasks within chroot as the created user.
 
 **README.md:** This text.
+
+**jdai.sh.old:** Deprecated older script for legacy systems, will not be updated.
 
 **jdai.py.old:** Deprecated Python version, will not be updated.
 
@@ -129,6 +129,12 @@ sudo limine-scan
 ```
 
 If the boot menu is shown, it will automatically boot into Arch after 10 seconds if there is no input from the user.
+
+## Boot mode
+
+If you are using manual partitioning, it is better to use UEFI only, as BIOS booting will fail on GPT disks.
+
+Otherwise, UEFI and BIOS is recommended, especially if installing to a portable device such as a USB drive.
 
 ---
 
