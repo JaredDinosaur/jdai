@@ -206,6 +206,7 @@ pkgs(){
     while [[ $loop == 1 ]]; do
         clear
         echo -e '\e[3m'"Install additional packages?"'\e(B\e[m'
+        echo -e '\e[3m'"This includes an ad blocker, resource monitor, and support for additional file systems."'\e(B\e[m'
         echo
         echo -e '\e[36m'"[Y]" '\e(B\e[m'"Yes"
         echo -e '\e[36m'"[N]" '\e(B\e[m'"No"
@@ -226,7 +227,7 @@ pkgs(){
     loop=1
     while [[ $loop == 1 ]]; do
         clear
-        echo -e '\e[3m'"Install Steam and additional gaming features?"'\e(B\e[m'
+        echo -e '\e[3m'"Install Steam, GPU drivers, and additional gaming features?"'\e(B\e[m'
         echo
         echo -e '\e[36m'"[Y]" '\e(B\e[m'"Yes"
         echo -e '\e[36m'"[N]" '\e(B\e[m'"No"
@@ -284,7 +285,16 @@ pkgs(){
 
 sethostname(){
     clear
-    read -p "Name your machine (letters, numbers and dashes): " hname
+    valid=0
+    while [[ $valid == 0 ]]; do
+        read -p "Name your machine (letters, numbers and dashes): " hname
+        if [[ "$hname" =~ ^[a-zA-Z0-9-]+$ ]]; then
+            valid=1
+        else
+            clear
+            echo "Invalid hostname!"
+        fi
+    done
 }
 
 user(){
@@ -319,7 +329,17 @@ user(){
         fi
     done
     clear
-    read -p "Name your user (single word, lowercase): " uname
+    valid=0
+    while [[ $valid == 0 ]]; do
+        read -p "Name your user (single word, lowercase): " uname
+        if [[ "$uname" =~ ^[a-z_][a-z0-9_-]*$ ]]; then
+            valid=1
+        else
+            clear
+            echo "Invalid username!"
+        fi
+    done
+    clear
     valid=0
     while [[ $valid == 0 ]]; do
         read -s -p "Enter your user's password (will not show): " pass
@@ -361,6 +381,36 @@ bootent(){
                 ;;
             n|N)
                 bootmenu=0
+                loop=0
+                ;;
+            *)
+                ;;
+        esac
+    done
+    loop=1
+    while [[ $loop == 1 ]]; do
+        clear
+        echo -e '\e[3m'"This machine is currently booted in $bootmode mode."'\e(B\e[m'
+        echo -e '\e[3m'"Would you like to make your system bootable in both BIOS and UEFI mode?"'\e(B\e[m'
+        echo
+        echo -e '\e[36m'"[Y]" '\e(B\e[m'"Yes"
+        echo -e '\e[36m'"[N]" '\e(B\e[m'"No"
+        read -n 1 choice
+        case $choice in
+            y|Y)
+                if [[ $bootmode == "BIOS" ]]; then
+                    uefiboot=1
+                else
+                    biosboot=1
+                fi
+                loop=0
+                ;;
+            n|N)
+                if [[ $bootmode == "BIOS" ]]; then
+                    uefiboot=0
+                else
+                    biosboot=0
+                fi
                 loop=0
                 ;;
             *)
@@ -422,7 +472,7 @@ clear
 echo
 echo "==================================WARNING=================================="
 echo "                This script requires an internet connection!               "
-echo "                This script is for 64-bit UEFI systems only!               "
+echo "                   This script is for x86-64 systems only!                 "
 echo " This script is intended to be run within the Arch Linux live environment! "
 echo "==========================================================================="
 echo "                                [Y] Continue                               "
@@ -439,12 +489,14 @@ esac
 # Check boot mode
 if [[ -d "/sys/firmware/efi" ]]; then
     echo "The system is booted in UEFI mode."
+    bootmode="UEFI"
+    uefiboot=1
+    biosboot=0
 else
-    echo "The system is not booted in UEFI mode! Check that UEFI booting is enabled and prioritised."
-    echo "This script does not currently support legacy/BIOS systems."
-    echo "For a legacy-compatible script, run './jdai.sh' to use the older script."
-    chmod +x jdai.sh
-    exit 3
+    echo "The system is booted in BIOS mode."
+    bootmode="BIOS"
+    uefiboot=0
+    biosboot=1
 fi
 # Check internet connection
 quit=0
@@ -531,6 +583,21 @@ while [[ $menu == 1 ]]; do
             echo "Boot menu:              Shown"
             ;;
     esac
+    case $uefiboot in
+        0)
+            echo "Boot mode:              BIOS only"
+            ;;
+        1)
+            case $biosboot in
+                0)
+                    echo "Boot mode:          UEFI only"
+                    ;;
+                1)
+                    echo "Boot mode:          BIOS and UEFI"
+                    ;;
+            esac
+            ;;
+    esac
     echo
     echo -e '\e[3m'"Install with these options?"'\e(B\e[m'
     echo
@@ -544,7 +611,7 @@ while [[ $menu == 1 ]]; do
     echo -e '\e[36m'"[3]" '\e(B\e[m'"Change packages and drivers"
     echo -e '\e[36m'"[4]" '\e(B\e[m'"Change hostname"
     echo -e '\e[36m'"[5]" '\e(B\e[m'"Change username and authentication"
-    echo -e '\e[36m'"[6]" '\e(B\e[m'"Change boot menu"
+    echo -e '\e[36m'"[6]" '\e(B\e[m'"Change boot options"
     read -n 1 choice
     case $choice in
         y|Y)
@@ -601,7 +668,12 @@ echo "systemctl enable sddm" >> jdai-efi-2.sh
 echo "systemctl enable lightdm" >> jdai-efi-2.sh
 echo "systemctl enable wireplumber" >> jdai-efi-2.sh
 # Create boot entry
-echo "efibootmgr --create --disk /dev/${disk} --part 1 --label \"Arch Linux\" --loader '\\BOOTX64.EFI' --unicode" >> jdai-efi-2.sh
+if [[ $uefiboot == 1 ]]; then
+    echo "efibootmgr --create --disk /dev/${disk} --part 1 --label \"Arch Linux\" --loader '\\BOOTX64.EFI' --unicode" >> jdai-efi-2.sh
+fi
+if [[ $biosboot == 1 ]]; then
+    echo "limine bios-install /dev/$disk" >> jdai-efi-2.sh
+fi
 # Copy child scripts
 echo "cp jdai-usr.sh /home/$uname" >> jdai-efi-2.sh
 # Switch to newly created user
@@ -679,7 +751,7 @@ case $manpart in
         # [SWAP] | Same as RAM
         # /      | rest of disk
         fdisk /dev/$disk <<EOF
-g
+o
 n
 1
 
@@ -701,6 +773,7 @@ EOF
         menu=1
         while [[ $menu == 1 ]]; do
             echo
+            echo "If your boot mode is not UEFI only, your disk must have an MBR partition table."
             echo "The following partitions are required:"
             echo
             echo " Type | Size"
@@ -848,8 +921,14 @@ if [[ $reg == "GB" ]]; then
 fi
 # Set hostname
 echo $hname > /mnt/etc/hostname
-# Create EFI boot point
-cp /mnt/usr/share/limine/BOOTX64.EFI /mnt/boot/
+if [[ $uefiboot == 1 ]]; then
+    # Create EFI boot point
+    cp /mnt/usr/share/limine/BOOTX64.EFI /mnt/boot/
+fi
+if [[ $biosboot == 1 ]]; then
+    # Create BIOS boot point
+    cp /mnt/usr/share/limine/limine-bios.sys /mnt/boot/
+fi
 # Get root partition UUID
 uuid=$(blkid -s UUID -o value /dev/$root)
 # Enable initramfs hooks
