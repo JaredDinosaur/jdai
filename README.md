@@ -2,6 +2,8 @@
 
 **jdai-efi.sh:** The main script. It is strongly recommended to use this one.
 
+**cleanup.sh:** A simple cleanup script which unmounts everything. Use this if the installation fails or is cancelled.
+
 **jdai-efi-oem.sh:** Allows installation for another user, partially completing the install and running a setup script on startup. Currently a work in progress, may be unstable with some configurations.
 
 **jdai-profile.sh:** Post-setup script run on startup, used by jdai-efi-oem.sh
