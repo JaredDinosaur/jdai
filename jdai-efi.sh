@@ -590,10 +590,10 @@ while [[ $menu == 1 ]]; do
         1)
             case $biosboot in
                 0)
-                    echo "Boot mode:          UEFI only"
+                    echo "Boot mode:              UEFI only"
                     ;;
                 1)
-                    echo "Boot mode:          BIOS and UEFI"
+                    echo "Boot mode:              BIOS and UEFI"
                     ;;
             esac
             ;;
