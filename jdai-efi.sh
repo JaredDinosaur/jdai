@@ -753,16 +753,19 @@ case $manpart in
         fdisk /dev/$disk <<EOF
 o
 n
+p
 1
 
 +1G
 y
 n
+p
 2
 
 +${ram}M
 y
 n
+p
 3
 
 
