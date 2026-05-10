@@ -504,58 +504,62 @@ quietmode() {
     done
 }
 
-quietpkg() {
-    curstage=""
-    prevlen=0
-    stage=""
-    current=""
-    total=""
-    item=""
-    msg=""
+quietpkg(){
+    local curstage=""
+    local prevlen=0
+    local stage=""
+    local current=""
+    local total=""
+    local item=""
+    local msg=""
+    local line=""
     "$@" 2>&1 | while IFS= read -r line; do
+        # Reset match variables every loop
+        stage=""
+        current=""
+        total=""
+        item=""
         # Download progress
         if [[ $line =~ \(([0-9]+)/([0-9]+)\)[[:space:]]+downloading[[:space:]]+(.+)$ ]]; then
             stage="Downloading"
-            current="${BASH_REMATCH[1]}"
-            total="${BASH_REMATCH[2]}"
-            item="${BASH_REMATCH[3]}"
+            current="${BASH_REMATCH[1]:-}"
+            total="${BASH_REMATCH[2]:-}"
+            item="${BASH_REMATCH[3]:-}"
         # Build progress
         elif [[ $line =~ ^[[:space:]]*[-\>]+[[:space:]]+Building[[:space:]]+package:[[:space:]]+(.+)$ ]]; then
             stage="Building"
-            item="${BASH_REMATCH[1]}"
-            current=""
-            total=""
+            item="${BASH_REMATCH[1]:-}"
         # makepkg phase
         elif [[ $line =~ ^==\>[[:space:]]+Starting[[:space:]]+package ]]; then
             stage="Packaging"
             item="makepkg"
-            current=""
-            total=""
         # Install progress
         elif [[ $line =~ \(([0-9]+)/([0-9]+)\)[[:space:]]+installing[[:space:]]+(.+)$ ]]; then
             stage="Installing"
-            current="${BASH_REMATCH[1]}"
-            total="${BASH_REMATCH[2]}"
-            item="${BASH_REMATCH[3]}"
+            current="${BASH_REMATCH[1]:-}"
+            total="${BASH_REMATCH[2]:-}"
+            item="${BASH_REMATCH[3]:-}"
         # Post-install hooks
         elif [[ $line =~ \(([0-9]+)/([0-9]+)\)[[:space:]]+(.+)$ ]]; then
+            # Ignore lines already handled above
             if [[ ! $line =~ installing && ! $line =~ downloading ]]; then
                 stage="Post-install hooks"
-                current="${BASH_REMATCH[1]}"
-                total="${BASH_REMATCH[2]}"
-                item="${BASH_REMATCH[3]}"
+                current="${BASH_REMATCH[1]:-}"
+                total="${BASH_REMATCH[2]:-}"
+                item="${BASH_REMATCH[3]:-}"
             else
                 continue
             fi
+
         else
             continue
         fi
         # Print newline on stage change
-        if [[ -n "$curstage" && "$stage" != "$curstage" ]]; then
+        if [[ -n $curstage && $stage != "$curstage" ]]; then
             echo
         fi
         curstage="$stage"
-        # Build message
+        # Build display message
         if [[ -n $current && -n $total ]]; then
             msg="$stage... ($current/$total) $item"
         else
