@@ -514,58 +514,50 @@ quietpkg(){
     local msg=""
     local line=""
     "$@" 2>&1 | while IFS= read -r line; do
-        # Reset match variables every loop
         stage=""
         current=""
         total=""
         item=""
-        # Download progress
         if [[ $line =~ \(([0-9]+)/([0-9]+)\)[[:space:]]+downloading[[:space:]]+(.+)$ ]]; then
             stage="Downloading"
             current="${BASH_REMATCH[1]:-}"
             total="${BASH_REMATCH[2]:-}"
             item="${BASH_REMATCH[3]:-}"
-        # Build progress
         elif [[ $line =~ ^[[:space:]]*[-\>]+[[:space:]]+Building[[:space:]]+package:[[:space:]]+(.+)$ ]]; then
             stage="Building"
             item="${BASH_REMATCH[1]:-}"
-        # makepkg phase
         elif [[ $line =~ ^==\>[[:space:]]+Starting[[:space:]]+package ]]; then
             stage="Packaging"
             item="makepkg"
-        # Install progress
         elif [[ $line =~ \(([0-9]+)/([0-9]+)\)[[:space:]]+installing[[:space:]]+(.+)$ ]]; then
             stage="Installing"
             current="${BASH_REMATCH[1]:-}"
             total="${BASH_REMATCH[2]:-}"
             item="${BASH_REMATCH[3]:-}"
-        # Post-install hooks
         elif [[ $line =~ \(([0-9]+)/([0-9]+)\)[[:space:]]+(.+)$ ]]; then
-            # Ignore lines already handled above
-            if [[ ! $line =~ installing && ! $line =~ downloading ]]; then
+            local m1="${BASH_REMATCH[1]:-}"
+            local m2="${BASH_REMATCH[2]:-}"
+            local m3="${BASH_REMATCH[3]:-}"
+            if [[ $line != *installing* && $line != *downloading* ]]; then
                 stage="Post-install hooks"
-                current="${BASH_REMATCH[1]:-}"
-                total="${BASH_REMATCH[2]:-}"
-                item="${BASH_REMATCH[3]:-}"
+                current="$m1"
+                total="$m2"
+                item="$m3"
             else
                 continue
             fi
-
         else
             continue
         fi
-        # Print newline on stage change
         if [[ -n $curstage && $stage != "$curstage" ]]; then
             echo
         fi
         curstage="$stage"
-        # Build display message
         if [[ -n $current && -n $total ]]; then
             msg="$stage... ($current/$total) $item"
         else
             msg="$stage... $item"
         fi
-        # Clear previous line
         printf "\r%-*s" "$prevlen" ""
         printf "\r%s" "$msg"
         prevlen=${#msg}
