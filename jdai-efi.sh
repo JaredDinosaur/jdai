@@ -1054,7 +1054,7 @@ echo "Installing base system..."$echolog
 if [[ $quiet == 0 ]]; then
     pacstrap -K /mnt $pkglist
 else
-    quietpkg pacstrap -K /mnt $pkglist -- --noprogressbar
+    quietpkg pacstrap -K /mnt $pkglist -- --noconfirm --noprogressbar
 fi
 # Configure filesystem mount points
 genfstab -U /mnt >> /mnt/etc/fstab
