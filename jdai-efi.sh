@@ -1023,31 +1023,31 @@ case $crypt in
     0)
         # Format root partition (no encryption)
         if [[ $rootfs == "ext4" ]]; then
-            mkfs.$rootfs /dev/$root$logfile
+            mkfs.$rootfs /dev/$root
         else
-            mkfs.$rootfs -f /dev/$root$logfile
+            mkfs.$rootfs -f /dev/$root
         fi
         # Mount root partition to /mnt
         mount /dev/$root /mnt
         ;;
     1)
         # Format and encrypt root partition
-        printf "%s" "$cryptpass" | cryptsetup -v --batch-mode luksFormat /dev/$root -$logfile
-        printf "%s" "$cryptpass" | cryptsetup open /dev/$root root -$logfile
-        mkfs.$rootfs /dev/mapper/root$logfile
+        printf "%s" "$cryptpass" | cryptsetup -v --batch-mode luksFormat /dev/$root -
+        printf "%s" "$cryptpass" | cryptsetup open /dev/$root root -
+        mkfs.$rootfs /dev/mapper/root
         # Mount root partition to /mnt
         mount /dev/mapper/root /mnt
         ;;
 esac
 if [[ $formboot == 1 ]]; then
     # Format ESP
-    mkfs.fat -F32 /dev/$boot$logfile
+    mkfs.fat -F32 /dev/$boot
 fi
 # Mount ESP to /mnt/boot
 mount --mkdir /dev/$boot /mnt/boot
 # Format and activate swap partition
-mkswap /dev/$swap$logfile
-swapon /dev/$swap$logfile
+mkswap /dev/$swap
+swapon /dev/$swap
 # Install packages
 echo "Installing base system..."$echolog
 if [[ $quiet == 0 ]]; then
