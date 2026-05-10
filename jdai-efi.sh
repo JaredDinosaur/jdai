@@ -238,30 +238,37 @@ pkgs(){
                 while [[ $loop == 1 ]]; do
                     clear
                     echo -e '\e[3m'"Select your graphics card manufacturer."'\e(B\e[m'
+                    echo -e '\e[3m'"For Nvidia, proprietary drivers are better for more recent cards (GTX 1650 or newer)."'\e(B\e[m'
                     echo -e '\e[3m'"If your machine has no graphics card, select your CPU manufacturer."'\e(B\e[m'
                     echo
                     echo -e '\e[36m'"[1]" '\e(B\e[m'"Intel"
                     echo -e '\e[36m'"[2]" '\e(B\e[m'"AMD (Radeon)"
-                    echo -e '\e[36m'"[3]" '\e(B\e[m'"Nvidia"
-                    echo -e '\e[36m'"[4]" '\e(B\e[m'"Other"
+                    echo -e '\e[36m'"[3]" '\e(B\e[m'"Nvidia (Open Source)"
+                    echo -e '\e[36m'"[4]" '\e(B\e[m'"Nvidia (Proprietary)"
+                    echo -e '\e[36m'"[5]" '\e(B\e[m'"Other"
                     read -n 1 choice
                     case $choice in
                         1)
-                            gpupkg=" vulkan-intel xf86-video-intel"
+                            gpupkg=" vulkan-intel xf86-video-intel lib32-vulkan-intel"
                             gpuconf="Intel"
                             loop=0
                             ;;
                         2)
-                            gpupkg=" vulkan-radeon xf86-video-amdgpu"
+                            gpupkg=" vulkan-radeon xf86-video-amdgpu lib32-vulkan-radeon"
                             gpuconf="AMD (Radeon)"
                             loop=0
                             ;;
                         3)
-                            gpupkg=" vulkan-nouveau xf86-video-nouveau"
-                            gpuconf="Nvidia"
+                            gpupkg=" vulkan-nouveau xf86-video-nouveau lib32-vulkan-nouveau"
+                            gpuconf="Nvidia (Open Source)"
                             loop=0
                             ;;
                         4)
+                            gpupkg=" nvidia nvidia-utils lib32-nvidia-utils"
+                            gpuconf="Nvidia (Proprietary)"
+                            loop=0
+                            ;;
+                        5)
                             gpupkg=""
                             gpuconf="Other"
                             loop=0
