@@ -815,7 +815,7 @@ if [[ $extrapkgs == 1 ]]; then
     if [[ $quiet == 0 ]]; then
         echo "yay -S --noconfirm --needed firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager ark thunar konsole dialog exfatprogs f2fs-tools hfsprogs jfsutils ntfs-3g udftools apfsprogs zfs-utils" >> jdai-usr.sh
     else
-        echo "quietpkg yay -S --noconfirm --noprogressbar --needed firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager ark thunar konsole dialog exfatprogs f2fs-tools hfsprogs jfsutils ntfs-3g udftools apfsprogs zfs-utils" >> jdai-usr.sh
+        echo "quietpkg yay -S --noconfirm --needed firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager ark thunar konsole dialog exfatprogs f2fs-tools hfsprogs jfsutils ntfs-3g udftools apfsprogs zfs-utils" >> jdai-usr.sh
     fi
 fi
 if [[ $gamer == 1 ]]; then
@@ -823,7 +823,7 @@ if [[ $gamer == 1 ]]; then
     if [[ $quiet == 0 ]]; then
         echo "yay -S --noconfirm --needed steam gamescope lutris winboat mesa$gpupkg" >> jdai-usr.sh
     else
-        echo "quietpkg yay -S --noconfirm --noprogressbar --needed steam gamescope lutris winboat mesa$gpupkg" >> jdai-usr.sh
+        echo "quietpkg yay -S --noconfirm --needed steam gamescope lutris winboat mesa$gpupkg" >> jdai-usr.sh
     fi
 fi
 # Install hyprland configuration files
@@ -1015,9 +1015,6 @@ EOF
         ;;
 esac
 clear
-if [[ $quiet == 1 ]]; then
-    sed -i "s/ILoveCandy/NoProgressBar/" /etc/pacman.conf
-fi
 echo "Formatting disk..."$echolog
 case $crypt in
     0)
@@ -1054,9 +1051,6 @@ if [[ $quiet == 0 ]]; then
     pacstrap -K /mnt $pkglist
 else
     quietpkg pacstrap -K /mnt $pkglist
-fi
-if [[ $quiet == 1 ]]; then
-    sed -i "s/NoProgressBar/ILoveCandy/" /etc/pacman.conf
 fi
 # Configure filesystem mount points
 genfstab -U /mnt >> /mnt/etc/fstab
