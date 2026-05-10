@@ -2,3 +2,4 @@
 umount /mnt/boot
 umount /mnt
 swapoff -a
+cryptsetup close /dev/mapper/root
