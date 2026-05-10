@@ -488,14 +488,14 @@ quietmode() {
         case $choice in
             y|Y)
                 quiet=1
-                logfile=">/dev/null"
+                logfile=" >/dev/null"
                 echolog=""
                 loop=0
                 ;;
             n|N)
                 quiet=0
                 logfile=""
-                echolog=">/dev/null"
+                echolog=" >/dev/null"
                 loop=0
                 ;;
             *)
