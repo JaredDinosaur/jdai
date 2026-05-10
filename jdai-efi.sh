@@ -475,6 +475,99 @@ intchk(){
     fi
 }
 
+quietmode() {
+    loop=1
+    while [[ $loop == 1 ]]; do
+        clear
+        echo -e '\e[3m'"Enable quiet mode?"'\e(B\e[m'
+        echo -e '\e[3m'"This prints less text during the installation, which is easier to read but provides less detail."'\e(B\e[m'
+        echo
+        echo -e '\e[36m'"[Y]" '\e(B\e[m'"Yes"
+        echo -e '\e[36m'"[N]" '\e(B\e[m'"No"
+        read -n 1 choice
+        case $choice in
+            y|Y)
+                quiet=1
+                logfile=">/dev/null"
+                echolog=""
+                loop=0
+                ;;
+            n|N)
+                quiet=0
+                logfile=""
+                echolog=">/dev/null"
+                loop=0
+                ;;
+            *)
+                ;;
+        esac
+    done
+}
+
+quietpkg() {
+    curstage=""
+    prevlen=0
+    stage=""
+    current=""
+    total=""
+    item=""
+    eval $1 2>&1 | while IFS= read -r line; do
+        # Download progress
+        if [[ $line =~ \(([0-9]+)/([0-9]+)\)\ downloading\ (.+)$ ]]; then
+            stage="Downloading"
+            current="${BASH_REMATCH[1]}"
+            total="${BASH_REMATCH[2]}"
+            item="${BASH_REMATCH[3]}"
+        # Build progress
+        elif [[ $line =~ ^[[:space:]]*[-\>]+\ Building\ package:\ (.+)$ ]]; then
+            stage="Building"
+            item="${BASH_REMATCH[1]}"
+            current=""
+            total=""
+        # makepkg phase
+        elif [[ $line =~ ^==\>\ Starting\ package ]]; then
+            stage="Packaging"
+            item="makepkg"
+            current=""
+            total=""
+        # Install progress
+        elif [[ $line =~ \(([0-9]+)/([0-9]+)\)\ installing\ (.+)$ ]]; then
+            stage="Installing"
+            current="${BASH_REMATCH[1]}"
+            total="${BASH_REMATCH[2]}"
+            item="${BASH_REMATCH[3]}"
+        # Post-install hooks
+        elif [[ $line =~ \(([0-9]+)/([0-9]+)\)\ (.+)$ ]]; then
+            if [[ ! $line =~ installing && ! $line =~ downloading ]]; then
+                stage="Post-install hooks"
+                current="${BASH_REMATCH[1]}"
+                total="${BASH_REMATCH[2]}"
+                item="${BASH_REMATCH[3]}"
+            else
+                continue
+            fi
+        else
+            continue
+        fi
+        # Print newline on stage change
+        if [[ -n "$curstage" && "$stage" != "$curstage" ]]; then
+            echo
+        fi
+        curstage="$stage"
+        # Build message
+        if [[ -n $current && -n $total ]]; then
+            msg="$stage... ($current/$total) $item"
+        else
+            msg="$stage... $item"
+        fi
+        # Clear previous line
+        printf "\r%-*s" "$prevlen" ""
+        printf "\r%s" "$msg"
+        prevlen=${#msg}
+    done
+    echo
+}
+
 clear
 echo
 echo "==================================WARNING=================================="
@@ -530,6 +623,7 @@ pkgs
 sethostname
 user
 bootent
+quietmode
 
 # Show options and ask for confirmation
 menu=1
@@ -605,6 +699,14 @@ while [[ $menu == 1 ]]; do
             esac
             ;;
     esac
+    case $quiet in
+        0)
+            echo "Quiet mode:            Disabled"
+            ;;
+        1)
+            echo "Quiet mode:            Enabled"
+            ;;
+    esac
     echo
     echo -e '\e[3m'"Install with these options?"'\e(B\e[m'
     echo
@@ -619,6 +721,7 @@ while [[ $menu == 1 ]]; do
     echo -e '\e[36m'"[4]" '\e(B\e[m'"Change hostname"
     echo -e '\e[36m'"[5]" '\e(B\e[m'"Change username and authentication"
     echo -e '\e[36m'"[6]" '\e(B\e[m'"Change boot options"
+    echo -e '\e[36m'"[7]" '\e(B\e[m'"Change quiet mode"
     read -n 1 choice
     case $choice in
         y|Y)
@@ -645,6 +748,9 @@ while [[ $menu == 1 ]]; do
         6)
             bootent
             ;;
+        7)
+            quietmode
+            ;;
         *)
             ;;
     esac
@@ -656,30 +762,36 @@ echo "#!/bin/bash" > jdai-usr.sh
 chmod +x jdai-efi-2.sh
 chmod +x jdai-usr.sh
 chmod +x cleanup.sh
+declare -f quietpkg >> jdai-efi-2.sh
+declare -f quietpkg >> jdai-usr.sh
 
 # Set timezone (GB only)
 if [[ $reg == "GB" ]]; then
+    echo "echo \"Generating locale...\"$echolog" >> jdai-efi-2.sh
     echo "ln -sf /usr/share/zoneinfo/Europe/London /etc/localtime" >> jdai-efi-2.sh
     echo "hwclock --systohc" >> jdai-efi-2.sh
 fi
 # Generate locale
-echo "locale-gen" >> jdai-efi-2.sh
+echo "locale-gen$logfile" >> jdai-efi-2.sh
 # Generate initramfs
-echo "mkinitcpio -P" >> jdai-efi-2.sh
+echo "echo \"Generating initramfs...\"$echolog" >> jdai-efi-2.sh
+echo "mkinitcpio -P$logfile" >> jdai-efi-2.sh
 # Enable system services
-echo "systemctl enable ip6tables iptables iwd NetworkManager-dispatcher NetworkManager systemd-network-generator systemd-networkd wpa_supplicant" >> jdai-efi-2.sh
-echo "systemctl enable accounts-daemon" >> jdai-efi-2.sh
-echo "systemctl enable udisks2" >> jdai-efi-2.sh
-echo "systemctl enable upower" >> jdai-efi-2.sh
-echo "systemctl enable sddm" >> jdai-efi-2.sh
-echo "systemctl enable lightdm" >> jdai-efi-2.sh
-echo "systemctl enable wireplumber" >> jdai-efi-2.sh
+echo "echo \"Enabling system services...\"$echolog" >> jdai-efi-2.sh
+echo "systemctl enable ip6tables iptables iwd NetworkManager-dispatcher NetworkManager systemd-network-generator systemd-networkd wpa_supplicant$logfile" >> jdai-efi-2.sh
+echo "systemctl enable accounts-daemon$logfile" >> jdai-efi-2.sh
+echo "systemctl enable udisks2$logfile" >> jdai-efi-2.sh
+echo "systemctl enable upower$logfile" >> jdai-efi-2.sh
+echo "systemctl enable sddm$logfile" >> jdai-efi-2.sh
+echo "systemctl enable lightdm$logfile" >> jdai-efi-2.sh
+echo "systemctl enable wireplumber$logfile" >> jdai-efi-2.sh
 # Create boot entry
+echo "echo \"Creating boot entry...\"$echolog" >> jdai-efi-2.sh
 if [[ $uefiboot == 1 ]]; then
-    echo "efibootmgr --create --disk /dev/${disk} --part 1 --label \"Arch Linux\" --loader '\\BOOTX64.EFI' --unicode" >> jdai-efi-2.sh
+    echo "efibootmgr --create --disk /dev/${disk} --part 1 --label \"Arch Linux\" --loader '\\BOOTX64.EFI' --unicode$logfile" >> jdai-efi-2.sh
 fi
 if [[ $biosboot == 1 ]]; then
-    echo "limine bios-install /dev/$disk" >> jdai-efi-2.sh
+    echo "limine bios-install /dev/$disk$logfile" >> jdai-efi-2.sh
 fi
 # Copy child scripts
 echo "cp jdai-usr.sh /home/$uname" >> jdai-efi-2.sh
@@ -689,23 +801,39 @@ echo "cd /home/$uname" >> jdai-efi-2.sh
 echo "su $uname -c ./jdai-usr.sh" >> jdai-efi-2.sh
 
 # Clone and build yay
-echo "sudo pacman -Syy" >> jdai-usr.sh
-echo "git clone https://aur.archlinux.org/yay.git" >> jdai-usr.sh
+echo "echo \"Installing yay...\"$echolog" >> jdai-usr.sh
+echo "quietpkg sudo pacman -Syy$logfile" >> jdai-usr.sh
+echo "git clone https://aur.archlinux.org/yay.git$logfile" >> jdai-usr.sh
 echo "cd yay" >> jdai-usr.sh
-echo "makepkg -si --noconfirm" >> jdai-usr.sh
+if [[ $quiet == 0 ]]; then
+    echo "makepkg -si --noconfirm" >> jdai-usr.sh
+else
+    echo "quietpkg \"makepkg -si --noconfirm\"" >> jdai-usr.sh
+fi
 #echo "yay -S --noconfirm limine-entry-tool" >> jdai-usr.sh
 
 # Install extra packages if selected
 if [[ $extrapkgs == 1 ]]; then
-    echo "yay -S --noconfirm --needed firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager ark thunar konsole dialog exfatprogs f2fs-tools hfsprogs jfsutils ntfs-3g udftools apfsprogs zfs-utils" >> jdai-usr.sh
+    echo "echo \"Installing extra packages...\"$echolog" >> jdai-usr.sh
+    if [[ $quiet == 0 ]]; then
+        echo "yay -S --noconfirm --needed firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager ark thunar konsole dialog exfatprogs f2fs-tools hfsprogs jfsutils ntfs-3g udftools apfsprogs zfs-utils" >> jdai-usr.sh
+    else
+        echo "quietpkg \"yay -S --noconfirm --needed firefox firefox-i18n-uk firefox-ublock-origin flatpak neofetch screenfetch fastfetch tree htop btop partitionmanager ark thunar konsole dialog exfatprogs f2fs-tools hfsprogs jfsutils ntfs-3g udftools apfsprogs zfs-utils\"" >> jdai-usr.sh
+    fi
 fi
 if [[ $gamer == 1 ]]; then
-    echo "yay -S --noconfirm --needed steam gamescope lutris winboat mesa$gpupkg" >> jdai-usr.sh
+    echo "echo \"Installing gaming packages and GPU drivers...\"$echolog" >> jdai-usr.sh
+    if [[ $quiet == 0 ]]; then
+        echo "yay -S --noconfirm --needed steam gamescope lutris winboat mesa$gpupkg" >> jdai-usr.sh
+    else
+        echo "quietpkg \"yay -S --noconfirm --needed steam gamescope lutris winboat mesa$gpupkg\"" >> jdai-usr.sh
+    fi
 fi
 # Install hyprland configuration files
 if [[ $profile == "Desktop (Hyprland)" ]]; then
+    echo "echo \"Configuring Hyprland...\"$echolog" >> jdai-usr.sh
     echo "cd .." >> jdai-usr.sh
-    echo "git clone https://github.com/JaredDinosaur/hyprconf" >> jdai-usr.sh
+    echo "git clone https://github.com/JaredDinosaur/hyprconf$logfile" >> jdai-usr.sh
     echo "cd hyprconf" >> jdai-usr.sh
     echo "mkdir ~/.config/hypr" >> jdai-usr.sh
     echo "mkdir ~/.config/kitty" >> jdai-usr.sh
@@ -889,48 +1017,57 @@ EOF
         clear
         ;;
 esac
-
+clear
+echo "Formatting disk..."$echolog
 case $crypt in
     0)
         # Format root partition (no encryption)
         if [[ $rootfs == "ext4" ]]; then
-            mkfs.$rootfs /dev/$root
+            mkfs.$rootfs /dev/$root$logfile
         else
-            mkfs.$rootfs -f /dev/$root
+            mkfs.$rootfs -f /dev/$root$logfile
         fi
         # Mount root partition to /mnt
         mount /dev/$root /mnt
         ;;
     1)
         # Format and encrypt root partition
-        printf "%s" "$cryptpass" | cryptsetup -v --batch-mode luksFormat /dev/$root -
-        printf "%s" "$cryptpass" | cryptsetup open /dev/$root root -
-        mkfs.$rootfs /dev/mapper/root
+        printf "%s" "$cryptpass" | cryptsetup -v --batch-mode luksFormat /dev/$root -$logfile
+        printf "%s" "$cryptpass" | cryptsetup open /dev/$root root -$logfile
+        mkfs.$rootfs /dev/mapper/root$logfile
         # Mount root partition to /mnt
         mount /dev/mapper/root /mnt
         ;;
 esac
 if [[ $formboot == 1 ]]; then
     # Format ESP
-    mkfs.fat -F32 /dev/$boot
+    mkfs.fat -F32 /dev/$boot$logfile
 fi
 # Mount ESP to /mnt/boot
 mount --mkdir /dev/$boot /mnt/boot
 # Format and activate swap partition
-mkswap /dev/$swap
-swapon /dev/$swap
+mkswap /dev/$swap$logfile
+swapon /dev/$swap$logfile
 # Install packages
-pacstrap -K /mnt $pkglist
+echo "Installing base system..."$echolog
+if [[ $quiet == 0 ]]; then
+    pacstrap -K /mnt $pkglist
+else
+    quietpkg "pacstrap -K /mnt $pkglist"
+fi
 # Configure filesystem mount points
 genfstab -U /mnt >> /mnt/etc/fstab
 # Set language and keyboard layout
+echo "Setting locale..."$echolog
 echo "en_${reg}.UTF-8 UTF-8" > /mnt/etc/locale.gen
 echo "LANG=en_${reg}.UTF-8" > /mnt/etc/locale.conf
 if [[ $reg == "GB" ]]; then
     echo "KEYMAP=uk" > /mnt/etc/vconsole.conf
 fi
 # Set hostname
+echo "Setting hostname..."$echolog
 echo $hname > /mnt/etc/hostname
+echo "Creating boot files..."$echolog
 if [[ $uefiboot == 1 ]]; then
     # Create EFI boot point
     cp /mnt/usr/share/limine/BOOTX64.EFI /mnt/boot/
@@ -951,6 +1088,7 @@ case $crypt in
         ;;
 esac
 # Configure bootloader
+echo "Configuring system files..."$echolog
 touch /mnt/boot/limine.conf
 case $bootmenu in
     0)
@@ -984,6 +1122,7 @@ sed -i '/\[multilib\]/,/Include/ s/^#//' /mnt/etc/pacman.conf
 sed -i 's/^# \(%wheel ALL=(ALL:ALL) NOPASSWD: ALL\)/\1/' /mnt/etc/sudoers
 
 cp ./* /mnt
+echo "Setting up users..."$echolog
 if [[ $rootpass == "" ]]; then
     # Disable root account
     arch-chroot /mnt passwd -l root
