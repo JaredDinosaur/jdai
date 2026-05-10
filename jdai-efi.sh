@@ -511,33 +511,34 @@ quietpkg() {
     current=""
     total=""
     item=""
-    eval $1 2>&1 | while IFS= read -r line; do
+    msg=""
+    "$@" 2>&1 | while IFS= read -r line; do
         # Download progress
-        if [[ $line =~ \(([0-9]+)/([0-9]+)\)\ downloading\ (.+)$ ]]; then
+        if [[ $line =~ \(([0-9]+)/([0-9]+)\)[[:space:]]+downloading[[:space:]]+(.+)$ ]]; then
             stage="Downloading"
             current="${BASH_REMATCH[1]}"
             total="${BASH_REMATCH[2]}"
             item="${BASH_REMATCH[3]}"
         # Build progress
-        elif [[ $line =~ ^[[:space:]]*[-\>]+\ Building\ package:\ (.+)$ ]]; then
+        elif [[ $line =~ ^[[:space:]]*[-\>]+[[:space:]]+Building[[:space:]]+package:[[:space:]]+(.+)$ ]]; then
             stage="Building"
             item="${BASH_REMATCH[1]}"
             current=""
             total=""
         # makepkg phase
-        elif [[ $line =~ ^==\>\ Starting\ package ]]; then
+        elif [[ $line =~ ^==\>[[:space:]]+Starting[[:space:]]+package ]]; then
             stage="Packaging"
             item="makepkg"
             current=""
             total=""
         # Install progress
-        elif [[ $line =~ \(([0-9]+)/([0-9]+)\)\ installing\ (.+)$ ]]; then
+        elif [[ $line =~ \(([0-9]+)/([0-9]+)\)[[:space:]]+installing[[:space:]]+(.+)$ ]]; then
             stage="Installing"
             current="${BASH_REMATCH[1]}"
             total="${BASH_REMATCH[2]}"
             item="${BASH_REMATCH[3]}"
         # Post-install hooks
-        elif [[ $line =~ \(([0-9]+)/([0-9]+)\)\ (.+)$ ]]; then
+        elif [[ $line =~ \(([0-9]+)/([0-9]+)\)[[:space:]]+(.+)$ ]]; then
             if [[ ! $line =~ installing && ! $line =~ downloading ]]; then
                 stage="Post-install hooks"
                 current="${BASH_REMATCH[1]}"
