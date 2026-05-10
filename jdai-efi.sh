@@ -701,10 +701,10 @@ while [[ $menu == 1 ]]; do
     esac
     case $quiet in
         0)
-            echo "Quiet mode:            Disabled"
+            echo "Quiet mode:             Disabled"
             ;;
         1)
-            echo "Quiet mode:            Enabled"
+            echo "Quiet mode:             Enabled"
             ;;
     esac
     echo
