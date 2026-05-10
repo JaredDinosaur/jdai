@@ -1019,7 +1019,7 @@ EOF
         ;;
 esac
 clear
-if [[ quiet == 1 ]]; then
+if [[ $quiet == 1 ]]; then
     sed -i "s/ILoveCandy/NoProgressBar/" /etc/pacman.conf
 fi
 echo "Formatting disk..."$echolog
@@ -1059,7 +1059,7 @@ if [[ $quiet == 0 ]]; then
 else
     quietpkg pacstrap -K /mnt $pkglist
 fi
-if [[ quiet == 1 ]]; then
+if [[ $quiet == 1 ]]; then
     sed -i "s/NoProgressBar/ILoveCandy/" /etc/pacman.conf
 fi
 # Configure filesystem mount points
