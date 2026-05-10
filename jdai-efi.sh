@@ -1019,6 +1019,9 @@ EOF
         ;;
 esac
 clear
+if [[ quiet == 1 ]]; then
+    sed -i "s/ILoveCandy/NoProgressBar/" /etc/pacman.conf
+fi
 echo "Formatting disk..."$echolog
 case $crypt in
     0)
@@ -1054,7 +1057,10 @@ echo "Installing base system..."$echolog
 if [[ $quiet == 0 ]]; then
     pacstrap -K /mnt $pkglist
 else
-    quietpkg pacstrap -K /mnt $pkglist -- --noconfirm --noprogressbar
+    quietpkg pacstrap -K /mnt $pkglist
+fi
+if [[ quiet == 1 ]]; then
+    sed -i "s/NoProgressBar/ILoveCandy/" /etc/pacman.conf
 fi
 # Configure filesystem mount points
 genfstab -U /mnt >> /mnt/etc/fstab
