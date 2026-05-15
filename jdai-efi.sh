@@ -1000,7 +1000,32 @@ arch-chroot /mnt bash ./jdai-efi-2.sh
 # Edit sudo configuration
 sed -i 's/^\(%wheel ALL=(ALL:ALL) NOPASSWD: ALL\)/# \1/' /mnt/etc/sudoers
 sed -i 's/^# \(%wheel ALL=(ALL:ALL) ALL\)/\1/' /mnt/etc/sudoers
-echo
-echo
-echo
-echo "Done! You may now reboot."
+
+loop=1
+while [[ $loop == 1 ]]; do
+    clear
+    echo -e '\e[3m'"Installation is complete!"'\e(B\e[m'
+    echo -e '\e[3m'"What would you like to do?"'\e(B\e[m'
+    echo
+    echo -e '\e[36m'"[1]" '\e(B\e[m'"Reboot now"
+    echo -e '\e[36m'"[2]" '\e(B\e[m'"Exit to shell"
+    echo -e '\e[36m'"[3]" '\e(B\e[m'"Clean up and exit (ideal for rerunning the installer)"
+    read -n 1 choice
+    case $choice in
+        1)
+            reboot
+            loop=0
+            ;;
+        2)
+            clear
+            loop=0
+            ;;
+        3)
+            ./cleanup.sh
+            clear
+            loop=0
+            ;;
+        *)
+            ;;
+    esac
+done
