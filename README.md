@@ -23,7 +23,7 @@
 # How to install Arch with this script (applies to jdai-efi.sh only)
 ### None of these scripts will work without an internet connection! You will need an Ethernet cable or Wi-Fi.
 ### Depending on the speed of your machine and internet, the installation process may appear to freeze at some points.
-### Be patient and wait for the text `Done! You may now reboot.` to appear.
+### Be patient and wait for the `Installation is complete!` menu to appear.
 
 ## Using a real machine:
 1) Put the Arch Linux installation media ([DOWNLOAD LINK](https://www.mirrorservice.org/sites/ftp.archlinux.org/iso/latest/archlinux-x86_64.iso)) onto a USB drive using [Rufus](https://rufus.ie/) or [Ventoy](https://www.ventoy.net/en/download.html).
