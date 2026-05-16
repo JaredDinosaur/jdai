@@ -702,7 +702,17 @@ fi
 if [[ $gamer == 1 ]]; then
     echo "yay -S --noconfirm --needed steam gamescope lutris winboat mesa$gpupkg" >> jdai-usr.sh
 fi
-# Install hyprland configuration files
+# Install Plasma configuration files
+if [[ $profile == "Desktop (Plasma)" ]]; then
+    echo "cd .." >> jdai-usr.sh
+    echo "git clone https://github.com/JaredDinosaur/plasmaconf" >> jdai-usr.sh
+    echo "cd plasmaconf" >> jdai-usr.sh
+    echo "mv kde_settings.conf .." >> jdai-usr.sh
+    echo "cp ./* ~/.config" >> jdai-usr.sh
+    echo "mv ../kde_settings.conf ." >> jdai-usr.sh
+    echo "sudo cp kde_settings.conf /etc/sddm.conf.d" >> jdai-usr.sh
+fi
+# Install Hyprland configuration files
 if [[ $profile == "Desktop (Hyprland)" ]]; then
     echo "cd .." >> jdai-usr.sh
     echo "git clone https://github.com/JaredDinosaur/hyprconf" >> jdai-usr.sh
