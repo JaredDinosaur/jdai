@@ -23,6 +23,7 @@
 > The next steps involve entering the BIOS and boot menu.
 > To do this, turn on your machine and immediately start mashing a specific key on your keyboard.
 > If you don't know which key to press, check [here](http://www.auditiait.es/en/list-of-keys-to-access-to-bios/) or Google your machine/motherboard model.
+
 > [!WARNING]
 > If you are planning to install alongside Windows, please ensure that BitLocker is disabled on your C: drive or that you have the recovery key on another device!
 > If you do not do this, you may be locked out of Windows!
